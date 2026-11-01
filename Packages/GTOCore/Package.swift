@@ -36,8 +36,16 @@ let package = Package(
             dependencies: ["ChartCompiler", "ChartData"]
         ),
         .target(
+            name: "Trainer",
+            dependencies: ["ChartData", "PokerDomain"]
+        ),
+        .target(
+            name: "TrainerStore",
+            dependencies: ["Trainer"]
+        ),
+        .target(
             name: "AppUI",
-            dependencies: ["PokerDomain", "ChartData"],
+            dependencies: ["PokerDomain", "ChartData", "Trainer", "TrainerStore"],
             resources: [
                 .process("Resources")
             ]
@@ -55,8 +63,16 @@ let package = Package(
             dependencies: ["ChartCompiler", "ChartData", "PokerDomain"]
         ),
         .testTarget(
+            name: "TrainerTests",
+            dependencies: ["Trainer", "ChartData", "PokerDomain"]
+        ),
+        .testTarget(
+            name: "TrainerStoreTests",
+            dependencies: ["TrainerStore", "Trainer"]
+        ),
+        .testTarget(
             name: "AppUITests",
-            dependencies: ["AppUI", "ChartData", "PokerDomain"]
+            dependencies: ["AppUI", "ChartData", "PokerDomain", "Trainer", "TrainerStore"]
         ),
     ]
 )

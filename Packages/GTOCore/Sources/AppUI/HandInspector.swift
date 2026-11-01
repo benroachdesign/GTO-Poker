@@ -131,7 +131,7 @@ private struct ComparisonChip: View {
 /// Finds a hand as you type it. Reads "ak" as AKs until an "o" says otherwise.
 struct HandSearchField: View {
     @Binding var selectedHand: String?
-    var focus: FocusState<ExplorerFocus?>.Binding
+    var isFocused: FocusState<Bool>.Binding
 
     @State private var text = ""
 
@@ -145,24 +145,32 @@ struct HandSearchField: View {
                 .textFieldStyle(.plain)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(Theme.textPrimary)
-                .focused(focus, equals: .search)
+                .focused(isFocused)
                 .autocorrectionDisabled()
                 #if os(iOS)
                 .textInputAutocapitalization(.never)
                 .submitLabel(.done)
+                .focusEffectDisabled()
+                .focusable(false) // Otherwise iPadOS moves here on the arrow keys, which are shortcuts in this app
                 #endif
                 .onChange(of: text) {
                     if let hand = HandGrid.parse(text) {
                         selectedHand = hand
                     }
                 }
-                .onSubmit {
-                    text = ""
-                    focus.wrappedValue = .explorer
+                .onSubmit(finish)
+                .onKeyPress(.escape) {
+                    finish()
+                    return .handled
                 }
         }
         .padding(.horizontal, 10)
         .frame(width: 124, height: 34)
         .background(Theme.surface, in: Capsule())
+    }
+
+    private func finish() {
+        text = ""
+        isFocused.wrappedValue = false
     }
 }

@@ -38,16 +38,6 @@ final class ExplorerModel {
         if let destination = choice.destination { go(to: destination) }
     }
 
-    /// Chooses by option code, for the keyboard: R, A, C or F. Returns whether it moved.
-    @discardableResult
-    func choose(code: String) -> Bool {
-        guard let choice = choices.first(where: { $0.code == code.uppercased() }), choice.destination != nil else {
-            return false
-        }
-        choose(choice)
-        return true
-    }
-
     func canTap(_ seat: Position) -> Bool {
         library.destination(tapping: seat, from: key) != nil
     }

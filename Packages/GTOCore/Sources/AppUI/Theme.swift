@@ -12,6 +12,7 @@ enum Theme {
     static let allIn = Color(hex: "C4183C")
     static let call = Color(hex: "228B22")
     static let fold = Color(hex: "2A2D32")
+    static let correct = Color(hex: "4CC26A") // Brighter than call, so a verdict reads on dark text
 
     static let textPrimary = Color.white
     static let textSecondary = Color.white.opacity(0.6)

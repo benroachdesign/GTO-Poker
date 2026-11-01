@@ -4,6 +4,7 @@ import PokerDomain
 
 enum CellState: Equatable {
     case action(OptionKind)
+    case concealed // In the range, but a drill hasn't revealed what it does yet
     case unreached // The hero already folded this hand earlier on the line
 }
 
@@ -51,13 +52,14 @@ private struct GridCell: View {
     private var fill: Color {
         switch state {
         case .action(let action): return Theme.color(for: action)
+        case .concealed: return Theme.fold
         case .unreached: return .clear
         }
     }
 
     private var textColor: Color {
         switch state {
-        case .action(.fold): return .white.opacity(0.4)
+        case .action(.fold), .concealed: return .white.opacity(0.4)
         case .action: return .white
         case .unreached: return .white.opacity(0.16)
         }
@@ -66,6 +68,7 @@ private struct GridCell: View {
     private var description: String {
         switch state {
         case .action(let action): return "\(hand): \(action.label)"
+        case .concealed: return hand
         case .unreached: return "\(hand): already folded"
         }
     }

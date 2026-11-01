@@ -4,6 +4,7 @@ import ChartData
 /// The legend and the way forward in one control: what the range does here, and where each choice leads.
 struct ChoiceBar: View {
     let choices: [SpotChoice]
+    var shortcutsEnabled = true
     let onChoose: (SpotChoice) -> Void
 
     var body: some View {
@@ -20,9 +21,17 @@ struct ChoiceBar: View {
                     }
                     .buttonStyle(PressableStyle())
                     .disabled(choice.destination == nil)
+                    .keyboardShortcut(shortcutsEnabled ? choice.shortcut : nil)
                 }
             }
         }
+    }
+}
+
+extension SpotChoice {
+    /// The option's own letter: R, A, C or F.
+    var shortcut: KeyboardShortcut? {
+        code.lowercased().first.map { KeyboardShortcut(KeyEquivalent($0), modifiers: []) }
     }
 }
 

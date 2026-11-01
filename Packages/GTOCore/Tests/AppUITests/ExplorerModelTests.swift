@@ -53,23 +53,9 @@ struct ExplorerModelTests {
         #expect(model.key.id == "LJ:r|BB")
     }
 
-    @Test func keyboardCodesMatchTheOptionsHere() throws {
-        let model = try model()
-        #expect(model.choose(code: "c") == false)  // Nobody calls at an open
-        #expect(model.choose(code: "x") == false)
-        #expect(model.choose(code: "\r") == false)
-        #expect(model.key.id == "|LJ")
-
-        #expect(model.choose(code: "r"))
-        #expect(model.key.id == "LJ:r|HJ")
-        #expect(model.choose(code: "F"))
-        #expect(model.key.id == "LJ:r|CO")
-    }
-
-    @Test func keysWithNowhereToGoAreLeftForTheSystem() throws {
+    @Test func everyChoiceHasItsOwnKey() throws {
         let model = try model(at: "LJ:r|BB")
-        #expect(model.choose(code: "c") == false)  // BB's call ends the line
-        #expect(model.key.id == "LJ:r|BB")
+        #expect(model.choices.compactMap { $0.shortcut?.key.character } == ["r", "c", "f"])
     }
 
     @Test func goingBackStepsAlongTheLine() throws {

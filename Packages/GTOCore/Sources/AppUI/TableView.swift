@@ -12,7 +12,7 @@ struct TableView: View {
     @State private var turn: Int
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private static let seatSize: CGFloat = 46
+    private static let maximumSeatSize: CGFloat = 46
 
     init(state: TableState, canTap: @escaping (Position) -> Bool, onTap: @escaping (Position) -> Void) {
         self.state = state
@@ -23,16 +23,18 @@ struct TableView: View {
 
     var body: some View {
         GeometryReader { geometry in
+            // Side seats sit half the rim apart, so shrink them on a short table rather than let them touch
+            let seatSize = min(Self.maximumSeatSize, geometry.size.height * 0.27)
             let rim = CGSize(
-                width: geometry.size.width / 2 - Self.seatSize / 2 - 2,
-                height: geometry.size.height / 2 - Self.seatSize / 2 - 2
+                width: geometry.size.width / 2 - seatSize / 2 - 2,
+                height: geometry.size.height / 2 - seatSize / 2 - 2
             )
 
             ZStack {
                 Capsule(style: .continuous)
                     .fill(Theme.felt)
                     .overlay(Capsule(style: .continuous).strokeBorder(Theme.hairline))
-                    .padding(Self.seatSize / 2 - 6)
+                    .padding(seatSize / 2 - 6)
 
                 PotLabel(pot: state.pot, toCall: state.toCall)
 
@@ -44,14 +46,14 @@ struct TableView: View {
                             .font(.system(size: 11, weight: .semibold))
                             .monospacedDigit()
                             .foregroundStyle(Theme.textSecondary)
-                            .modifier(Orbit(phase: phase, radii: CGSize(width: rim.width * 0.68, height: rim.height * 0.56)))
+                            .modifier(Orbit(phase: phase, radii: rim, inset: seatSize / 2 + 10, sideInset: 12))
                     }
 
                     Button {
                         onTap(seat.position)
                     } label: {
                         SeatView(seat: seat, isTappable: canTap(seat.position))
-                            .frame(width: Self.seatSize, height: Self.seatSize)
+                            .frame(width: seatSize, height: seatSize)
                     }
                     .buttonStyle(PressableStyle())
                     .disabled(!canTap(seat.position))
@@ -72,9 +74,13 @@ struct TableView: View {
 
 /// Moves a centred view onto an ellipse, clockwise from the bottom. Animating the
 /// phase carries it along the rim, where animating a position would cut across the table.
+/// An inset pulls it that far in toward the middle, so a bet can sit just in front of its seat,
+/// with extra room at the sides of the table because numbers are wider than they are tall.
 private struct Orbit: GeometryEffect {
     var phase: Double
     let radii: CGSize
+    var inset: CGFloat = 0
+    var sideInset: CGFloat = 0
 
     var animatableData: Double {
         get { phase }
@@ -83,10 +89,12 @@ private struct Orbit: GeometryEffect {
 
     func effectValue(size: CGSize) -> ProjectionTransform {
         let angle = phase * .pi / 3
-        return ProjectionTransform(CGAffineTransform(
-            translationX: -radii.width * sin(angle),
-            y: radii.height * cos(angle)
-        ))
+        let x = -radii.width * sin(angle)
+        let y = radii.height * cos(angle)
+        let distance = hypot(x, y)
+        let pulledIn = inset + sideInset * abs(sin(angle))
+        let scale = distance > 0 ? max(distance - pulledIn, 0) / distance : 0
+        return ProjectionTransform(CGAffineTransform(translationX: x * scale, y: y * scale))
     }
 }
 

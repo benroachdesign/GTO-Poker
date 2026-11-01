@@ -2,17 +2,13 @@ import SwiftUI
 import ChartData
 import PokerDomain
 
-/// Who gets the keyboard: the explorer's shortcuts, or the hand search.
-enum ExplorerFocus: Hashable {
-    case explorer, search
-}
-
 struct ExplorerView: View {
     @Bindable var model: ExplorerModel
+    var isActive = true // Tabs stay alive when hidden, so a hidden one must not take key presses
     @Environment(RangeManager.self) private var rangeManager
 
     @State private var showingReview = false
-    @FocusState private var focus: ExplorerFocus?
+    @FocusState private var isSearching: Bool
 
     private static let wideWidth: CGFloat = 900
     private static let mediumWidth: CGFloat = 600
@@ -38,11 +34,7 @@ struct ExplorerView: View {
             .padding(.top, 8)
         }
         .background(Theme.background.ignoresSafeArea())
-        .focusable()
-        .focusEffectDisabled()
-        .focused($focus, equals: .explorer)
-        .onAppear { focus = .explorer }
-        .onKeyPress(phases: .down, action: handleKey)
+        .background { keyboardShortcuts }
         .sheet(isPresented: $showingReview) {
             ReviewView()
         }
@@ -51,8 +43,8 @@ struct ExplorerView: View {
     // MARK: - Layouts
 
     private func compactLayout(_ size: CGSize) -> some View {
-        let reserved = 32 + 52 + size.width + 84 + Self.gap * 5 + 24
-        let panelHeight = min(max(size.height - reserved, 176), 300)
+        let reserved = 32 + 52 + size.width + 78 + Self.gap * 4 + 16
+        let panelHeight = min(max(size.height - reserved, 150), 300)
 
         return ScrollView {
             VStack(spacing: Self.gap) {
@@ -161,7 +153,7 @@ struct ExplorerView: View {
 
             Spacer(minLength: 0)
 
-            HandSearchField(selectedHand: $model.selectedHand, focus: $focus)
+            HandSearchField(selectedHand: $model.selectedHand, isFocused: $isSearching)
         }
         .frame(height: 52)
     }
@@ -173,7 +165,11 @@ struct ExplorerView: View {
     }
 
     private var choiceBar: some View {
-        ChoiceBar(choices: model.choices, onChoose: model.choose)
+        ChoiceBar(choices: model.choices, shortcutsEnabled: shortcutsEnabled, onChoose: model.choose)
+    }
+
+    private var shortcutsEnabled: Bool {
+        isActive && !isSearching
     }
 
     private var table: some View {
@@ -215,26 +211,23 @@ struct ExplorerView: View {
 
     // MARK: - Keyboard
 
-    private func handleKey(_ press: KeyPress) -> KeyPress.Result {
-        if focus == .search {
-            // Everything typed belongs to the field, or a hand would get played mid-search
-            guard press.key == .escape else { return .ignored }
-            focus = .explorer
-            return .handled
+    /// Hidden buttons, because a shortcut on a button works wherever focus happens to be.
+    /// They step aside during a search, or typing a hand would move around the charts.
+    @ViewBuilder
+    private var keyboardShortcuts: some View {
+        if shortcutsEnabled {
+            Group {
+                Button("Previous seat") { model.cycle(by: -1) }
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                Button("Next seat") { model.cycle(by: 1) }
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+                Button("Go back", action: model.goBack)
+                    .keyboardShortcut(.upArrow, modifiers: [])
+                Button("Clear hand") { model.selectedHand = nil }
+                    .keyboardShortcut(.escape, modifiers: [])
+            }
+            .opacity(0)
+            .accessibilityHidden(true)
         }
-
-        switch press.key {
-        case .leftArrow:
-            model.cycle(by: -1)
-        case .rightArrow:
-            model.cycle(by: 1)
-        case .upArrow, .delete:
-            model.goBack()
-        case .escape:
-            model.selectedHand = nil
-        default:
-            guard press.modifiers.isEmpty, model.choose(code: press.characters) else { return .ignored }
-        }
-        return .handled
     }
 }
