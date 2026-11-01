@@ -28,10 +28,18 @@ struct DrillModelTests {
         library = try ChartLibrary.bundled()
     }
 
-    private func model(length: Int = 3) -> DrillModel {
-        let model = DrillModel(library: library, store: store, generator: SeededGenerator(state: 42))
+    private func model(length: Int = 3, now: @escaping () -> Date = Date.init) -> DrillModel {
+        let model = DrillModel(library: library, store: store, generator: SeededGenerator(state: 42), now: now)
         model.length = length
         return model
+    }
+
+    /// Plays a session to its end, getting every question wrong.
+    private func missEverything(_ model: DrillModel) throws {
+        for _ in 0..<model.sessionLength {
+            model.answer(code: try wrongCode(model))
+            model.next()
+        }
     }
 
     /// The right answer to the current question.
@@ -214,6 +222,180 @@ struct DrillModelTests {
         #expect(model.canStart == false)
         model.start()
         #expect(model.question == nil)
+    }
+
+    @Test func nothingIsDueBeforeAnythingIsAnswered() {
+        let model = model()
+        #expect(model.dueCount == 0)
+        model.startReview()
+        #expect(model.question == nil)
+    }
+
+    @Test func missedHandsAreDueStraightAway() throws {
+        let model = model(length: 3)
+        model.start()
+        try missEverything(model)
+        #expect(model.dueCount == 3)
+    }
+
+    @Test func rightAnswersAreNotDueUntilLater() throws {
+        var date = Date.now
+        let model = model(length: 1, now: { date })
+        model.start()
+        model.answer(code: try bestCode(model))
+        model.next()
+        #expect(model.dueCount == 0)
+
+        date = date.addingTimeInterval(2 * 86_400)
+        model.refreshHistory()
+        #expect(model.dueCount == 1)
+    }
+
+    @Test func aReviewAsksExactlyWhatsDue() throws {
+        let model = model(length: 3)
+        model.start()
+        let missed = Set(try playAndMiss(model))
+
+        model.startReview()
+        #expect(model.isReviewing)
+        #expect(model.sessionLength == 3)
+
+        var asked = Set<String>()
+        while case .question = model.phase {
+            asked.insert(try #require(model.question?.hand))
+            model.answer(code: try bestCode(model))
+            model.next()
+        }
+        #expect(asked == missed)
+    }
+
+    @Test func aReviewNeverReplacesASessionInProgress() throws {
+        let model = model(length: 2)
+        model.start()
+        try missEverything(model)
+        #expect(model.dueCount == 2)
+
+        model.start()
+        let question = model.question
+        model.startReview()
+        #expect(model.isReviewing == false)
+        #expect(model.question == question)
+    }
+
+    private func playAndMiss(_ model: DrillModel) throws -> [String] {
+        var hands: [String] = []
+        for _ in 0..<model.sessionLength {
+            hands.append(try #require(model.question?.hand))
+            model.answer(code: try wrongCode(model))
+            model.next()
+        }
+        return hands
+    }
+
+    @Test func clearingAReviewLeavesNothingDue() throws {
+        let model = model(length: 2)
+        model.start()
+        try missEverything(model)
+
+        model.startReview()
+        for _ in 0..<2 {
+            model.answer(code: try bestCode(model))
+            model.next()
+        }
+        #expect(model.dueCount == 0)
+    }
+
+    @Test func missingAHandInReviewBringsItStraightBack() throws {
+        let model = model(length: 2)
+        model.start()
+        try missEverything(model)
+
+        model.startReview()
+        try missEverything(model)
+        #expect(model.dueCount == 2)
+
+        model.repeatSession()
+        #expect(model.isReviewing)
+        #expect(model.sessionLength == 2)
+    }
+
+    @Test func aNormalSessionAfterAReviewIsNotAReview() throws {
+        let model = model(length: 2)
+        model.start()
+        try missEverything(model)
+        model.startReview()
+        model.end()
+        model.finish()
+
+        model.start()
+        #expect(model.isReviewing == false)
+        #expect(model.sessionLength == 2)
+    }
+
+    @Test func aReviewIsCappedSoItStaysManageable() throws {
+        let model = model(length: 50)
+        model.start()
+        try missEverything(model)
+
+        model.startReview()
+        #expect(model.sessionLength == 30)
+    }
+
+    @Test func reviewWaitsForRulingsToo() throws {
+        let model = model(length: 1)
+        model.start()
+        try missEverything(model)
+
+        var book = library.book
+        book.disputes[0].status = .open
+        let locked = DrillModel(library: try ChartLibrary(book: book), store: store)
+        locked.startReview()
+        #expect(locked.question == nil)
+    }
+
+    @Test func masteryPicksUpNewAnswers() throws {
+        let drills = model(length: 2)
+        let mastery = MasteryModel(library: library, store: store)
+        mastery.refresh()
+        #expect(mastery.report.hasHistory == false)
+        #expect(mastery.historyFile == nil)
+
+        drills.start()
+        try missEverything(drills)
+        mastery.refresh()
+        #expect(mastery.report.record.attempts == 2)
+        #expect(mastery.report.dueCount == 2)
+
+        let file = try #require(mastery.historyFile)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        #expect(try decoder.decode([Attempt].self, from: AttemptLog.json(file.attempts)).count == 2)
+    }
+
+    @Test func masteryNoticesANewDayWithoutANewAnswer() throws {
+        var date = Date.now
+        let drills = model(length: 1, now: { date })
+        let mastery = MasteryModel(library: library, store: store, now: { date })
+
+        drills.start()
+        drills.answer(code: try bestCode(drills))
+        drills.next()
+        mastery.refresh()
+        #expect(mastery.report.dueCount == 0)
+
+        date = date.addingTimeInterval(2 * 86_400)
+        mastery.refresh()
+        #expect(mastery.report.dueCount == 1)
+    }
+
+    @Test func theVersionChangesWithTheLogOrTheDayButNotTheHour() throws {
+        let morning = Calendar.current.startOfDay(for: .now).addingTimeInterval(8 * 3_600)
+        let attempt = Attempt(book: "6max-100", spot: "|LJ", hand: "AA", option: "R", cell: "R:10000", answeredAt: morning)
+        let version = HistoryVersion(attempts: [attempt], now: morning)
+
+        #expect(version == HistoryVersion(attempts: [attempt], now: morning.addingTimeInterval(3_600)))
+        #expect(version != HistoryVersion(attempts: [attempt, attempt], now: morning))
+        #expect(version != HistoryVersion(attempts: [attempt], now: morning.addingTimeInterval(86_400)))
     }
 
     @Test func answersShowBetSizesInPlainWords() throws {

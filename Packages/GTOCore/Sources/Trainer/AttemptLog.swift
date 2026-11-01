@@ -38,6 +38,13 @@ public struct SpotRecord: Hashable, Sendable {
 }
 
 public enum AttemptLog {
+    public static func json(_ attempts: [Attempt]) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        return try encoder.encode(attempts)
+    }
+
     /// Attempts that still mean something against this book. A chart repair
     /// discards only the hands it changed, and everything else carries on.
     public static func valid(_ attempts: [Attempt], in library: ChartLibrary) -> [Attempt] {

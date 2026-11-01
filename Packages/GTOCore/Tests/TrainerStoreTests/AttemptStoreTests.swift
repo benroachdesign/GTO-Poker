@@ -31,6 +31,24 @@ struct AttemptStoreTests {
         #expect(try store.attempts().count == 1)
     }
 
+    @Test func answersAddedAfterReadingAreStillSeen() throws {
+        let store = try SwiftDataAttemptStore(inMemory: true)
+        try store.append(attempt("AA", at: 10))
+        #expect(try store.attempts().count == 1)
+
+        try store.append(attempt("KK", at: 20))
+        #expect(try store.attempts().map(\.hand) == ["AA", "KK"])
+    }
+
+    @Test func aDuplicateAfterReadingCountsOnce() throws {
+        let store = try SwiftDataAttemptStore(inMemory: true)
+        let id = UUID()
+        try store.append(attempt("AA", at: 10, id: id))
+        _ = try store.attempts()
+        try store.append(attempt("AA", at: 10, id: id))
+        #expect(try store.attempts().count == 1)
+    }
+
     @Test func historyExportsAsJSON() throws {
         let store = try SwiftDataAttemptStore(inMemory: true)
         try store.append(attempt("AA", at: 10))

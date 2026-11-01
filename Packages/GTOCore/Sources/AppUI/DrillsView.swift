@@ -30,8 +30,7 @@ private struct DrillSetupView: View {
     private var historyText: String {
         let totals = model.historyTotals
         guard totals.attempts > 0 else { return "Build a session. Harder hands come up more often." }
-        let hands = totals.attempts == 1 ? "1 hand" : "\(totals.attempts.formatted()) hands"
-        return "\(hands) answered, \(BetText.share(totals.accuracy)) correct"
+        return "\(BetText.hands(totals.attempts)) answered, \(BetText.percent(totals.accuracy)) correct"
     }
 
     var body: some View {
@@ -52,6 +51,12 @@ private struct DrillSetupView: View {
                         .font(.subheadline)
                         .foregroundStyle(Theme.textSecondary)
                 } else {
+                    if model.dueCount > 0 {
+                        ReviewPrompt(dueCount: model.dueCount) {
+                            withAnimation(Theme.motion) { model.startReview() }
+                        }
+                    }
+
                     filters
                     startButton
                 }
@@ -117,6 +122,42 @@ private struct DrillSetupView: View {
     }
 }
 
+/// Spaced review, offered ahead of everything else when something is due.
+struct ReviewPrompt: View {
+    let dueCount: Int
+    let onReview: () -> Void
+
+    private var title: String {
+        "\(BetText.hands(dueCount)) due for review"
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(title)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Theme.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+
+            Spacer(minLength: 0)
+
+            Button(action: onReview) {
+                Text("Review")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, 16)
+                    .frame(height: 36)
+                    .background(Color.white, in: Capsule())
+            }
+            .buttonStyle(PressableStyle())
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 10)
+        .padding(.vertical, 10)
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+}
+
 private struct FilterGroup<Content: View>: View {
     let title: String
     @ViewBuilder let content: Content
@@ -163,6 +204,11 @@ private struct DrillSummaryView: View {
         model.answers.isEmpty ? 0 : Double(model.correctCount) / Double(model.answers.count)
     }
 
+    /// A finished review only repeats if it left something behind, such as the hands you just missed.
+    private var canRepeat: Bool {
+        !model.isReviewing || model.dueCount > 0
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -172,7 +218,7 @@ private struct DrillSummaryView: View {
                         .tracking(-1)
                         .monospacedDigit()
                         .foregroundStyle(Theme.textPrimary)
-                    Text("\(BetText.share(accuracy)) correct")
+                    Text("\(BetText.percent(accuracy)) correct")
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(Theme.textSecondary)
 
@@ -201,23 +247,38 @@ private struct DrillSummaryView: View {
                 }
 
                 VStack(spacing: 8) {
-                    Button {
-                        withAnimation(Theme.motion) { model.start() }
-                    } label: {
-                        Text("Drill again")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(Theme.raise, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    }
-                    .buttonStyle(PressableStyle())
-
-                    Button("Change session", action: model.finish)
+                    if canRepeat {
+                        Button {
+                            withAnimation(Theme.motion) { model.repeatSession() }
+                        } label: {
+                            Text(model.isReviewing ? "Keep reviewing" : "Drill again")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(Theme.raise, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        }
                         .buttonStyle(PressableStyle())
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Theme.textSecondary)
-                        .frame(height: 40)
+                    }
+
+                    if canRepeat {
+                        Button(model.isReviewing ? "Done" : "Change session", action: model.finish)
+                            .buttonStyle(PressableStyle())
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Theme.textSecondary)
+                            .frame(height: 40)
+                    } else {
+                        // A cleared review has nothing left to repeat, so finishing is the next step
+                        Button(action: model.finish) {
+                            Text("Done")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(Color.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        }
+                        .buttonStyle(PressableStyle())
+                    }
                 }
             }
             .padding(20)

@@ -25,12 +25,16 @@ final class DrillModel {
     }
 
     static let sessionLengths = [10, 20, 50]
+    private static let reviewLimit = 30
 
     let library: ChartLibrary
     var scope = DrillScope()
     var length = 20
 
     private(set) var phase = Phase.setup
+    private(set) var sessionLength = 0
+    private(set) var isReviewing = false
+    private(set) var dueCount = 0
     private(set) var question: DrillQuestion?
     private(set) var table: TableState?
     private(set) var choices: [SpotChoice] = []
@@ -41,16 +45,27 @@ final class DrillModel {
     private(set) var saveFailed = false
 
     private let store: any AttemptStore
+    private let now: () -> Date
     private var generator: any RandomNumberGenerator
     private var dealer: DrillDealer?
+    private var reviewQueue: [DrillQuestion] = []
     private var asked: [DrillQuestion] = []
+    private var schedule: ReviewSchedule
+    private var historyVersion: HistoryVersion?
     private let logger = Logger(subsystem: "com.benroachdesign.GTOPoker", category: "drills")
 
-    init(library: ChartLibrary, store: any AttemptStore, generator: any RandomNumberGenerator = SystemRandomNumberGenerator()) {
+    init(
+        library: ChartLibrary,
+        store: any AttemptStore,
+        generator: any RandomNumberGenerator = SystemRandomNumberGenerator(),
+        now: @escaping () -> Date = Date.init
+    ) {
         self.library = library
         self.store = store
         self.generator = generator
-        loadRecords()
+        self.now = now
+        schedule = ReviewSchedule(attempts: [], library: library)
+        refreshHistory()
     }
 
     /// Drills teach whatever the charts say, so they wait until every ruling is in.
@@ -69,6 +84,13 @@ final class DrillModel {
     var currentAnswer: DrillAnswer? {
         if case .answered(let answer) = phase { return answer }
         return nil
+    }
+
+    var isInSession: Bool {
+        switch phase {
+        case .question, .answered: return true
+        case .setup, .summary: return false
+        }
     }
 
     var correctCount: Int {
@@ -94,8 +116,41 @@ final class DrillModel {
     func start() {
         guard canStart else { return }
 
-        loadRecords()
+        refreshHistory()
         dealer = DrillDealer(library: library, scope: scope, records: records)
+        isReviewing = false
+        sessionLength = length
+        beginSession()
+    }
+
+    /// A session of whatever spaced review says is due, least known first.
+    /// A drill already under way is left alone, so nothing you were doing gets thrown away.
+    func startReview() {
+        guard !isLocked, !isInSession else { return }
+
+        refreshHistory()
+        reviewQueue = schedule.due(at: now())
+            .prefix(Self.reviewLimit)
+            .compactMap { item in
+                SpotKey(id: item.spot).map { DrillQuestion(spot: $0, hand: item.hand) }
+            }
+        guard !reviewQueue.isEmpty else { return }
+
+        isReviewing = true
+        sessionLength = reviewQueue.count
+        beginSession()
+    }
+
+    /// Goes round again in whichever kind of session just ended.
+    func repeatSession() {
+        if isReviewing {
+            startReview()
+        } else {
+            start()
+        }
+    }
+
+    private func beginSession() {
         answers = []
         asked = []
         dealNext()
@@ -125,24 +180,50 @@ final class DrillModel {
     func next() {
         guard case .answered = phase else { return }
 
-        if answers.count >= length {
-            phase = .summary
+        if answers.count >= sessionLength {
+            showSummary()
         } else {
             dealNext()
         }
     }
 
     func end() {
-        phase = answers.isEmpty ? .setup : .summary
+        if answers.isEmpty {
+            phase = .setup
+        } else {
+            showSummary()
+        }
     }
 
     func finish() {
-        loadRecords()
+        refreshHistory()
         phase = .setup
     }
 
+    /// Reloads everything worked out from the log, such as how much is due.
+    func refreshHistory() {
+        do {
+            let attempts = try store.attempts()
+            let version = HistoryVersion(attempts: attempts, now: now())
+            guard version != historyVersion else { return }
+
+            historyVersion = version
+            records = AttemptLog.records(for: attempts, in: library)
+            schedule = ReviewSchedule(attempts: attempts, library: library)
+            dueCount = schedule.due(at: now()).count
+        } catch {
+            logger.error("Failed to load attempts: \(error)")
+        }
+    }
+
+    private func showSummary() {
+        refreshHistory()
+        phase = .summary
+    }
+
     private func dealNext() {
-        guard let dealt = dealer?.deal(after: asked, using: &generator) else {
+        let dealt = isReviewing ? reviewQueue.popFirst() : dealer?.deal(after: asked, using: &generator)
+        guard let dealt else {
             phase = .setup
             return
         }
@@ -176,7 +257,7 @@ final class DrillModel {
             hand: question.hand,
             option: chosen.code,
             cell: spot.cellSignature(for: question.hand),
-            answeredAt: .now
+            answeredAt: now()
         )
         do {
             try store.append(attempt)
@@ -185,12 +266,10 @@ final class DrillModel {
             logger.error("Failed to save attempt: \(error)")
         }
     }
+}
 
-    private func loadRecords() {
-        do {
-            records = AttemptLog.records(for: try store.attempts(), in: library)
-        } catch {
-            logger.error("Failed to load attempts: \(error)")
-        }
+private extension Array {
+    mutating func popFirst() -> Element? {
+        isEmpty ? nil : removeFirst()
     }
 }

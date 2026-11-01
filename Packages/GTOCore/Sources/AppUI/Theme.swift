@@ -40,6 +40,20 @@ enum BetText {
     static func share(_ fraction: Double) -> String {
         fraction.formatted(.percent.precision(.fractionLength(1)))
     }
+
+    /// A whole percent, for numbers about you rather than about a range.
+    static func percent(_ fraction: Double) -> String {
+        fraction.formatted(.percent.precision(.fractionLength(0)))
+    }
+
+    /// Mastery moves slowly, so early progress reads "<1%" rather than a flat zero.
+    static func mastery(_ fraction: Double) -> String {
+        fraction > 0 && fraction < 0.01 ? "<1%" : percent(fraction)
+    }
+
+    static func hands(_ count: Int) -> String {
+        count == 1 ? "1 hand" : "\(count.formatted()) hands"
+    }
 }
 
 /// Responds on touch-down, so every control feels direct.

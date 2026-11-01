@@ -129,7 +129,7 @@ struct DrillSessionView: View {
 
     private var progressRow: some View {
         HStack(spacing: 12) {
-            Text("\(model.questionNumber) of \(model.length)")
+            Text("\(model.questionNumber) of \(model.sessionLength)")
                 .font(.system(size: 13, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(Theme.textPrimary)
@@ -140,7 +140,7 @@ struct DrillSessionView: View {
                     .overlay(alignment: .leading) {
                         Capsule()
                             .fill(Theme.textPrimary)
-                            .frame(width: geometry.size.width * Double(model.answers.count) / Double(max(model.length, 1)))
+                            .frame(width: geometry.size.width * Double(model.answers.count) / Double(max(model.sessionLength, 1)))
                     }
                     .animation(Theme.motion, value: model.answers.count)
             }
@@ -246,7 +246,7 @@ struct DrillSessionView: View {
             )
 
             Button(action: advance) {
-                Text(model.answers.count >= model.length ? "See results" : "Next hand")
+                Text(model.answers.count >= model.sessionLength ? "See results" : "Next hand")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity)

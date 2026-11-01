@@ -12,10 +12,7 @@ public protocol AttemptStore: AnyObject {
 extension AttemptStore {
     /// The whole history as JSON, as a backup no sync problem can reach.
     public func exportJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        encoder.dateEncodingStrategy = .iso8601
-        return try encoder.encode(attempts())
+        try AttemptLog.json(attempts())
     }
 }
 
@@ -66,6 +63,8 @@ final class AttemptRecord {
 @MainActor
 public final class SwiftDataAttemptStore: AttemptStore {
     private let container: ModelContainer
+    private var log: [Attempt]? // Held once read: it only grows, and a fetch took 0.3s at 10,000 answers
+    private var ids = Set<UUID>()
 
     /// Sync stays off until it's turned on deliberately in a later milestone.
     public init(inMemory: Bool = false) throws {
@@ -76,15 +75,23 @@ public final class SwiftDataAttemptStore: AttemptStore {
     public func append(_ attempt: Attempt) throws {
         container.mainContext.insert(AttemptRecord(attempt))
         try container.mainContext.save()
+
+        if log != nil, ids.insert(attempt.id).inserted {
+            log?.append(attempt)
+        }
     }
 
-    /// Oldest first. Attempts are deduplicated by id, since a database with no
-    /// unique constraints can hold the same one twice once sync is on.
+    /// Oldest first when read. Attempts are deduplicated by id, since a database with no
+    /// unique constraints can hold the same one twice once sync is on. Sync will have to
+    /// clear the copy held here whenever it brings in attempts from another device.
     public func attempts() throws -> [Attempt] {
+        if let log { return log }
+
         let descriptor = FetchDescriptor<AttemptRecord>(sortBy: [SortDescriptor(\.answeredAt)])
-        var seen = Set<UUID>()
-        return try container.mainContext.fetch(descriptor)
+        let attempts = try container.mainContext.fetch(descriptor)
             .map(\.attempt)
-            .filter { seen.insert($0.id).inserted }
+            .filter { ids.insert($0.id).inserted }
+        log = attempts
+        return attempts
     }
 }
