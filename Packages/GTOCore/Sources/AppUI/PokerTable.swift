@@ -1,4 +1,5 @@
 import SwiftUI
+import PokerDomain
 
 struct PokerTableView: View {
     @EnvironmentObject var gameState: GameState

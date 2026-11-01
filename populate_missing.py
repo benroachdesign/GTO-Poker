@@ -1,7 +1,7 @@
 import json
 import os
 
-JSON_PATH = 'GTOPoker/Resources/poker_ranges.json'
+JSON_PATH = 'Packages/GTOCore/Sources/ChartData/Resources/poker_ranges.json'
 
 def populate():
     with open(JSON_PATH, 'r') as f:

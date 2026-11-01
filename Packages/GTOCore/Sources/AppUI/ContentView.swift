@@ -1,4 +1,5 @@
 import SwiftUI
+import ChartData
 
 struct ContentView: View {
     @EnvironmentObject var gameState: GameState

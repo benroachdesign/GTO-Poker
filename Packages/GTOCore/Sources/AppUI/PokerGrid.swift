@@ -1,10 +1,11 @@
 import SwiftUI
+import ChartData
+import PokerDomain
 
 struct PokerGridView: View {
     let currentRange: PokerRange?
 
-    // Ranks for 13x13 grid
-    let ranks = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
+    private let ranks = HandGrid.ranks
 
     var body: some View {
         GeometryReader { geo in
@@ -42,7 +43,7 @@ struct PokerGridView: View {
                             ForEach(0..<13, id: \.self) { row in
                                 HStack(spacing: spacing) {
                                     ForEach(0..<13, id: \.self) { col in
-                                        let hand = getHandName(row: row, col: col)
+                                        let hand = HandGrid.getHandName(row: row, col: col)
                                         let action = currentRange?.ranges[hand]
                                         GridCell(hand: hand, action: action, size: cellSize)
                                     }
@@ -64,14 +65,6 @@ struct PokerGridView: View {
                 }
             }
         }
-    }
-    
-    func getHandName(row: Int, col: Int) -> String {
-        let r1 = ranks[row]
-        let r2 = ranks[col]
-        if row == col { return "\(r1)\(r2)" }
-        if row < col { return "\(r1)\(r2)s" }
-        return "\(r2)\(r1)o"
     }
     
 }

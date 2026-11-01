@@ -2,7 +2,7 @@ import json
 import sys
 
 def check_scenarios(hero, villain):
-    with open('GTOPoker/Resources/poker_ranges.json', 'r') as f:
+    with open('Packages/GTOCore/Sources/ChartData/Resources/poker_ranges.json', 'r') as f:
         data = json.load(f)
     
     found = []
