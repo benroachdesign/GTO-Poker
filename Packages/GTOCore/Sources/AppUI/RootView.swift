@@ -11,6 +11,7 @@ public struct RootView: View {
         ContentView()
             .environmentObject(rangeManager)
             .environmentObject(gameState)
+            .task { await rangeManager.load() }
             #if os(macOS)
             .frame(minWidth: 500, minHeight: 600)
             #endif

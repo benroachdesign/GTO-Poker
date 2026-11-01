@@ -12,6 +12,9 @@ let package = Package(
         .library(
             name: "AppUI",
             targets: ["AppUI"]),
+        .executable(
+            name: "chartc",
+            targets: ["chartc"]),
     ],
     targets: [
         .target(
@@ -21,8 +24,16 @@ let package = Package(
             name: "ChartData",
             dependencies: ["PokerDomain"],
             resources: [
-                .copy("Resources/poker_ranges.json")
+                .copy("Resources/6max-100.json")
             ]
+        ),
+        .target(
+            name: "ChartCompiler",
+            dependencies: ["ChartData", "PokerDomain"]
+        ),
+        .executableTarget(
+            name: "chartc",
+            dependencies: ["ChartCompiler", "ChartData"]
         ),
         .target(
             name: "AppUI",
@@ -37,7 +48,11 @@ let package = Package(
         ),
         .testTarget(
             name: "ChartDataTests",
-            dependencies: ["ChartData"]
+            dependencies: ["ChartData", "PokerDomain"]
+        ),
+        .testTarget(
+            name: "ChartCompilerTests",
+            dependencies: ["ChartCompiler", "ChartData", "PokerDomain"]
         ),
         .testTarget(
             name: "AppUITests",

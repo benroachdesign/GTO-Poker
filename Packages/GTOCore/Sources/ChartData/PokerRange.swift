@@ -2,13 +2,37 @@ import Foundation
 import Combine
 import PokerDomain
 
-public struct PokerRange: Codable, Identifiable, Sendable {
-    public var id: String { "\(scenario)_\(hero)_\(villain ?? "")" }
-
-    public let scenario: String
-    public let hero: String
-    public let villain: String? // Empty string in JSON, usually
+public struct PokerRange: Identifiable, Sendable {
+    public let id: String
     public let ranges: [String: String] // Hand Key (e.g. "AA") -> Action (e.g. "Raise")
+
+    public init(spot: Spot) {
+        id = spot.id
+        var ranges: [String: String] = [:]
+        for hand in HandGrid.allHands {
+            ranges[hand] = spot.primaryAction(for: hand).label
+        }
+        self.ranges = ranges
+    }
+
+    private init(id: String, ranges: [String: String]) {
+        self.id = id
+        self.ranges = ranges
+    }
+
+    /// What the range's aggressive action is called. Spots facing a 4-bet shove rather than raise.
+    public var aggressiveLabel: String {
+        ranges.values.contains(OptionKind.allIn.label) ? OptionKind.allIn.label : OptionKind.raise.label
+    }
+
+    /// This range as it was before a repair.
+    public func reverting(_ changes: [CellChange]) -> PokerRange {
+        var ranges = ranges
+        for change in changes {
+            ranges[change.hand] = OptionKind(code: change.was)?.label
+        }
+        return PokerRange(id: "\(id)#before", ranges: ranges)
+    }
 
     // Computed statistics
     public var stats: RangeStats {
@@ -35,14 +59,6 @@ public struct PokerRange: Codable, Identifiable, Sendable {
             fold: (foldCombos / total) * 100
         )
     }
-
-    var lookupKey: String {
-        PokerRange.makeKey(scenario: scenario, hero: hero, villain: villain)
-    }
-
-    static func makeKey(scenario: String, hero: String, villain: String?) -> String {
-        "\(scenario.lowercased())_\(hero.lowercased())_\(villain?.lowercased() ?? "")"
-    }
 }
 
 public struct RangeStats: Sendable {
@@ -59,30 +75,40 @@ public struct RangeStats: Sendable {
 
 @MainActor
 public final class RangeManager: ObservableObject {
-    @Published private(set) var rangesByKey: [String: PokerRange] = [:]
+    @Published public private(set) var library: ChartLibrary?
+    @Published public private(set) var loadError: String?
+    private var rangesByID: [String: PokerRange] = [:]
 
-    public init() {
-        loadRanges()
-    }
+    public init() {}
 
-    func loadRanges() {
-        guard let url = Bundle.module.url(forResource: "poker_ranges", withExtension: "json") else {
-            print("poker_ranges.json not found in bundle")
-            return
-        }
+    /// Decodes the bundled book off the main actor, so launch never waits on it.
+    public func load() async {
+        guard library == nil else { return }
 
+        let clock = ContinuousClock()
+        let start = clock.now
         do {
-            let data = try Data(contentsOf: url)
-            let ranges = try JSONDecoder().decode([PokerRange].self, from: data)
-            rangesByKey = Dictionary(uniqueKeysWithValues: ranges.map { ($0.lookupKey, $0) })
-            print("Loaded \(rangesByKey.count) ranges")
+            let (library, ranges) = try await Task.detached(priority: .userInitiated) {
+                let library = try ChartLibrary.bundled()
+                let ranges = library.book.spots.map { PokerRange(spot: $0) }
+                return (library, ranges)
+            }.value
+
+            rangesByID = Dictionary(uniqueKeysWithValues: ranges.map { ($0.id, $0) })
+            self.library = library
+            print("Loaded \(ranges.count) spots in \(clock.now - start)")
         } catch {
-            print("Failed to decode ranges: \(error)")
+            loadError = String(describing: error)
+            print("Failed to load ranges: \(error)")
         }
     }
 
-    public func getRange(scenario: String, hero: String, villain: String?) -> PokerRange? {
-        let key = PokerRange.makeKey(scenario: scenario, hero: hero, villain: villain)
-        return rangesByKey[key]
+    public func getRange(scenario: ScenarioType, hero: Position, villain: Position?) -> PokerRange? {
+        guard let key = SpotKey(scenario: scenario, hero: hero, villain: villain) else { return nil }
+        return rangesByID[key.id]
+    }
+
+    public func range(forSpot id: String) -> PokerRange? {
+        rangesByID[id]
     }
 }

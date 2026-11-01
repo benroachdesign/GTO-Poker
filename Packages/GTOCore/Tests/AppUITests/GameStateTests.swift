@@ -71,22 +71,23 @@ struct GameStateTests {
         #expect(state.activeScenario == .rfi)
     }
 
-    @Test func everySpotTheTableCanReachHasARange() {
+    @Test func everySpotTheTableCanReachHasARange() async {
         let state = GameState()
         let manager = RangeManager()
+        await manager.load()
 
         for dealer in 1...6 {
             state.dealerSeat = dealer
             let hero = state.heroPosition
 
             if hero != .BB {
-                #expect(manager.getRange(scenario: ScenarioType.rfi.rawValue, hero: hero.rawValue, villain: nil) != nil)
+                #expect(manager.getRange(scenario: .rfi, hero: hero, villain: nil) != nil)
             }
 
             for seat in 2...6 {
                 let villain = state.getPosition(forSeat: seat)
                 for scenario in state.getValidScenarios(hero: hero, villain: villain) {
-                    let range = manager.getRange(scenario: scenario.rawValue, hero: hero.rawValue, villain: villain.rawValue)
+                    let range = manager.getRange(scenario: scenario, hero: hero, villain: villain)
                     #expect(range != nil, "\(scenario.rawValue) \(hero.rawValue) v \(villain.rawValue)")
                 }
             }

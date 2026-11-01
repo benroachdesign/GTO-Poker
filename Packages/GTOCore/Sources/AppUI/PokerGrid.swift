@@ -4,6 +4,8 @@ import PokerDomain
 
 struct PokerGridView: View {
     let currentRange: PokerRange?
+    var highlighted: Set<String> = []
+    var emptyMessage = "No range data for this spot"
 
     private let ranks = HandGrid.ranks
 
@@ -45,7 +47,7 @@ struct PokerGridView: View {
                                     ForEach(0..<13, id: \.self) { col in
                                         let hand = HandGrid.getHandName(row: row, col: col)
                                         let action = currentRange?.ranges[hand]
-                                        GridCell(hand: hand, action: action, size: cellSize)
+                                        GridCell(hand: hand, action: action, size: cellSize, isHighlighted: highlighted.contains(hand))
                                     }
                                 }
                             }
@@ -57,9 +59,10 @@ struct PokerGridView: View {
                             Image(systemName: "questionmark.square.dashed")
                                 .font(.system(size: 36))
                                 .foregroundColor(.white.opacity(0.3))
-                            Text("No range data for this spot")
+                            Text(emptyMessage)
                                 .font(.caption)
                                 .foregroundColor(.white.opacity(0.3))
+                                .multilineTextAlignment(.center)
                         }
                     }
                 }
@@ -73,6 +76,7 @@ struct GridCell: View {
     let hand: String
     let action: String?
     let size: CGFloat
+    var isHighlighted = false
 
     var fillColor: Color {
         switch action {
@@ -93,6 +97,12 @@ struct GridCell: View {
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.5)
             )
+            .overlay {
+                if isHighlighted {
+                    RoundedRectangle(cornerRadius: size * 0.18)
+                        .strokeBorder(Color.white, lineWidth: max(1.5, size * 0.1))
+                }
+            }
             .animation(.easeInOut(duration: 0.2), value: action)
             .help("\(hand): \(action ?? "Fold")")
     }

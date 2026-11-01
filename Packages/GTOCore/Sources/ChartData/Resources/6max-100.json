@@ -1,0 +1,2544 @@
+{
+  "book" : {
+    "format" : "6max",
+    "id" : "6max-100",
+    "source" : {
+      "file" : "GTO Preflop Ranges - POKER TRAINER RANGES.csv",
+      "sha256" : "8a3a74e07b10e855384bb3681a38f76a395d2a7d0ccca5e5c2bde0ea1fe2a059"
+    },
+    "stackBB" : 100,
+    "title" : "6-max 100bb"
+  },
+  "disputes" : [
+    {
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "detail" : "The two charts are identical at 41.8%. Your older sizing rules in version 25.2 have the SB limping, which these charts don't include.",
+      "id" : "D-001",
+      "question" : "Should the SB open exactly the BTN range?",
+      "ruling" : "Keep it. The SB opens the BTN range, raise or fold, with no limping.",
+      "spots" : [
+        "|SB",
+        "|BTN"
+      ],
+      "status" : "resolved",
+      "title" : "SB opening range"
+    },
+    {
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "detail" : "AA calls in BTN v CO and BB v SB, and 5-bets in the other 13 vs 4-bet spots. These could be deliberate traps or typing errors.",
+      "hands" : [
+        "AA"
+      ],
+      "id" : "D-002",
+      "question" : "Should AA call rather than 5-bet in these two spots?",
+      "ruling" : "Keep both. These are deliberate traps in spots where the hero acts last after the flop.",
+      "spots" : [
+        "CO:r,BTN:r,CO:r|BTN",
+        "SB:r,BB:r,SB:r|BB"
+      ],
+      "status" : "resolved",
+      "title" : "Aces facing a 4-bet"
+    },
+    {
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "detail" : "No hand raises in any vs 5-bet spot, which implies a 5-bet is all-in at 100bb. If so, the 89 Raise cells facing a 4-bet should be labelled All-in. This has to be settled before drills start, because it changes spot ids.",
+      "id" : "D-003",
+      "question" : "Are the Raise cells in vs 4-bet spots all-ins?",
+      "ruling" : "Yes. Raise facing a 4-bet means all-in. Applied as rule R-004.",
+      "spots" : [
+
+      ],
+      "status" : "resolved",
+      "title" : "Are 5-bets all-in?"
+    },
+    {
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "detail" : "The charts don't record sizes. Your older rules in version 25.2 use a 2.5bb open, 3x 3-bet and 2.5x 4-bet in position, and a 3.5bb open, 3.5x 3-bet and 2.75x 4-bet out of position.",
+      "id" : "D-004",
+      "question" : "What bet sizes do these charts assume?",
+      "ruling" : "Use the 25.2 rules. Opens go by seat. 3-bets and 4-bets judge position against the actual opponent.",
+      "spots" : [
+
+      ],
+      "status" : "resolved",
+      "title" : "Bet sizes"
+    }
+  ],
+  "patches" : [
+    {
+      "changes" : [
+        {
+          "hand" : "AJs",
+          "now" : "F",
+          "was" : "C"
+        },
+        {
+          "hand" : "A5s",
+          "now" : "F",
+          "was" : "A"
+        },
+        {
+          "hand" : "KQs",
+          "now" : "F",
+          "was" : "C"
+        },
+        {
+          "hand" : "TT",
+          "now" : "F",
+          "was" : "A"
+        },
+        {
+          "hand" : "99",
+          "now" : "F",
+          "was" : "C"
+        }
+      ],
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "evidence" : "Weakest of the three. This chart fits HJ, CO, BTN or SB, so CO rests on it following the real BB v HJ chart at line 646 in the sheet's usual order.",
+      "id" : "R-001",
+      "kind" : "relabel",
+      "originalLabel" : "vs 4bet BB v HJ",
+      "reason" : "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "sourceLine" : 660,
+      "spot" : "CO:r,BB:r,CO:r|BB",
+      "status" : "confirmed"
+    },
+    {
+      "changes" : [
+        {
+          "hand" : "ATs",
+          "now" : "F",
+          "was" : "C"
+        },
+        {
+          "hand" : "A4s",
+          "now" : "A",
+          "was" : "F"
+        },
+        {
+          "hand" : "AQo",
+          "now" : "C",
+          "was" : "A"
+        },
+        {
+          "hand" : "88",
+          "now" : "F",
+          "was" : "C"
+        }
+      ],
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "evidence" : "Strongest of the three. BTN is the only villain whose 3-bet range contains every hand in this chart.",
+      "id" : "R-002",
+      "kind" : "relabel",
+      "originalLabel" : "vs 4bet BB v HJ",
+      "reason" : "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "sourceLine" : 674,
+      "spot" : "BTN:r,BB:r,BTN:r|BB",
+      "status" : "confirmed"
+    },
+    {
+      "changes" : [
+        {
+          "hand" : "AA",
+          "now" : "C",
+          "was" : "A"
+        },
+        {
+          "hand" : "AQs",
+          "now" : "C",
+          "was" : "A"
+        },
+        {
+          "hand" : "KJs",
+          "now" : "C",
+          "was" : "F"
+        },
+        {
+          "hand" : "KTs",
+          "now" : "C",
+          "was" : "F"
+        },
+        {
+          "hand" : "QJs",
+          "now" : "C",
+          "was" : "F"
+        },
+        {
+          "hand" : "99",
+          "now" : "F",
+          "was" : "C"
+        },
+        {
+          "hand" : "88",
+          "now" : "F",
+          "was" : "C"
+        },
+        {
+          "hand" : "77",
+          "now" : "F",
+          "was" : "C"
+        }
+      ],
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "evidence" : "This chart fits BTN or SB. Line 674 can only be BTN, which leaves SB, and that also matches the sheet's order.",
+      "id" : "R-003",
+      "kind" : "relabel",
+      "originalLabel" : "vs 4bet BB v HJ",
+      "reason" : "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "sourceLine" : 688,
+      "spot" : "SB:r,BB:r,SB:r|BB",
+      "status" : "confirmed"
+    }
+  ],
+  "rules" : [
+    {
+      "decidedBy" : "Ben Roach, 2026-10-31",
+      "evidence" : "No hand raises in any vs 5-bet spot, only calls or folds. Ruling D-003.",
+      "from" : "R",
+      "id" : "R-004",
+      "reason" : "The sheet writes every aggressive action as R, but a 5-bet is all-in at 100bb.",
+      "scenario" : "vs 4bet",
+      "status" : "confirmed",
+      "to" : "A"
+    }
+  ],
+  "schemaVersion" : 1,
+  "spots" : [
+    {
+      "grid" : [
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRFFF",
+        "RRRRRRFFFFFFF",
+        "RRRRRFFFFFFFF",
+        "RFFFRRFFFFFFF",
+        "FFFFFRFFFFFFF",
+        "FFFFFFRFFFFFF",
+        "FFFFFFFRFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 3.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 2,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRFFF",
+        "RRRRRRRFFFFFF",
+        "RRRRRRFFFFFFF",
+        "RRRFRRFFFFFFF",
+        "RFFFFRFFFFFFF",
+        "FFFFFFRFFFFFF",
+        "FFFFFFFRFFFFF",
+        "FFFFFFFFRFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 3.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 16,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRRF",
+        "RRRRRRRRRRFFF",
+        "RRRRRRRRFFFFF",
+        "RRRRRRRFFFFFF",
+        "RRFFFRRFFFFFF",
+        "RFFFFFRFFFFFF",
+        "FFFFFFFRFFFFF",
+        "FFFFFFFFRFFFF",
+        "FFFFFFFFFRFFF",
+        "FFFFFFFFFFRFF",
+        "FFFFFFFFFFFRF",
+        "FFFFFFFFFFFFR"
+      ],
+      "id" : "|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 2.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 30,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRFF",
+        "RRRRRRRRRFFFF",
+        "RRRRRRRRRFFFF",
+        "RRFFFFRRRFFFF",
+        "RFFFFFFRRRFFF",
+        "RFFFFFFFRRFFF",
+        "RFFFFFFFFRRFF",
+        "RFFFFFFFFFRFF",
+        "RFFFFFFFFFFRF",
+        "FFFFFFFFFFFFR"
+      ],
+      "id" : "|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 2.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 44,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRRR",
+        "RRRRRRRRRRRFF",
+        "RRRRRRRRRFFFF",
+        "RRRRRRRRRFFFF",
+        "RRFFFFRRRFFFF",
+        "RFFFFFFRRRFFF",
+        "RFFFFFFFRRFFF",
+        "RFFFFFFFFRRFF",
+        "RFFFFFFFFFRFF",
+        "RFFFFFFFFFFRF",
+        "FFFFFFFFFFFFR"
+      ],
+      "id" : "|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 3.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 58,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 72,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 86,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "RFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 100,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCCFFFFF",
+        "FFFFFFFCCFFFF",
+        "FFFFFFFFCCFFF",
+        "FFFFFFFFFCCFF",
+        "FFFFFFFFFFCFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 114,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "RFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCCFFFFF",
+        "FFFFFFFCCFFFF",
+        "FFFFFFFFCFFFF",
+        "FFFFFFFFFCFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 128,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRRFFFFFFF",
+        "RRRRRFFFFFFFF",
+        "RRRRRFFFFFFFF",
+        "RFFFRFFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCCFFFFF",
+        "FFFFFFFCCFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 7.5
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 142,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RFRRFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 12.25
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 156,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "RRRRFFFFFFFFF",
+        "RFFRFFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 12.25
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 170,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRFFFRRRF",
+        "RRRRRFFFFFFFF",
+        "RRRRRFFFFFFFF",
+        "RRFRRFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFRFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 8.75
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 184,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRRRRRRRRF",
+        "RRRRRFFFFFFFF",
+        "RRRRRFFFFFFFF",
+        "RRFRRFFFFFFFF",
+        "RFFFRRFFFFFFF",
+        "FFFFFRFFFFFFF",
+        "FFFFFFRFFFFFF",
+        "FFFFFFFRFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 8.75
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 198,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRCCCCRRCC",
+        "RRRRCCCCCCCCF",
+        "CRRCCCCCFFFFF",
+        "CFFCCCCFFFFFF",
+        "CFFFCCCCFFFFF",
+        "FFFFFCCCCFFFF",
+        "FFFFFFCCCFFFF",
+        "FFFFFFFCCCFFF",
+        "FFFFFFFFCCCFF",
+        "FFFFFFFFFCCCF",
+        "FFFFFFFFFFCCF",
+        "FFFFFFFFFFFCF",
+        "FFFFFFFFFFFFC"
+      ],
+      "id" : "LJ:r|BB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 12.25
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 212,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRCCCCCRRRRR",
+        "RRCCCCCCRRRRR",
+        "CRRCCCCCFFFFF",
+        "CCCRCCCFFFFFF",
+        "CFFFCCCCFFFFF",
+        "FFFFFCCCCFFFF",
+        "FFFFFFCCCCFFF",
+        "FFFFFFFCCCFFF",
+        "FFFFFFFFCCCFF",
+        "FFFFFFFFFCCCF",
+        "FFFFFFFFFFCCF",
+        "FFFFFFFFFFFCF",
+        "FFFFFFFFFFFFC"
+      ],
+      "id" : "HJ:r|BB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 12.25
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 226,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRCCCCCRRRRR",
+        "RRCCCCCCRRRRR",
+        "RRRCCCCCCCFFF",
+        "RCCRCCCCCFFFF",
+        "CCCCCCCCFFFFF",
+        "CFFFFCCCCFFFF",
+        "FFFFFFCCCFFFF",
+        "FFFFFFFCCCFFF",
+        "FFFFFFFFCCCFF",
+        "FFFFFFFFFCCCF",
+        "FFFFFFFFFFCCF",
+        "FFFFFFFFFFFCF",
+        "FFFFFFFFFFFFC"
+      ],
+      "id" : "CO:r|BB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 8.75
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 240,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRCCCCRRCC",
+        "RRRRRRCCCCCCC",
+        "RRRRRRCCCCCCC",
+        "RRCRRRRCCCCFF",
+        "RCCCRRRCCFFFF",
+        "CCFCCRRCCFFFF",
+        "CFFFFFCCCCFFF",
+        "CFFFFFFCCCCFF",
+        "CFFFFFFFCCCFF",
+        "CFFFFFFFFCCCF",
+        "FFFFFFFFFFCCF",
+        "FFFFFFFFFFFCF",
+        "FFFFFFFFFFFFC"
+      ],
+      "id" : "BTN:r|BB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 8.75
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 254,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRRRCCCCRRCC",
+        "RRRRRCCCCCCCC",
+        "RCRRCCCCCCCCC",
+        "CCCRCCCCCCCCC",
+        "CCCCRCCCCRRRR",
+        "CCCCCCCCCCFFF",
+        "CCRFCFCCCCCFF",
+        "RRFFFFFCCCCFF",
+        "RRFFFFFFCCCCF",
+        "RRFFFFFFFCCCC",
+        "RFFFFFFFFFCCC",
+        "RFFFFFFFFFFCC",
+        "RFFFFFFFFFFFC"
+      ],
+      "id" : "SB:r|BB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 10.5
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 268,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRRFF",
+        "RRRRFFFFFFFFF",
+        "FFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,HJ:r|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 282,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "FFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,CO:r|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 296,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRRFF",
+        "RRRRRFFFFFFFF",
+        "FFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BTN:r|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 310,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRRFF",
+        "RRRFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,SB:r|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 30.63
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 324,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRRFF",
+        "RRCCFFFFFFFFF",
+        "FFCCFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BB:r|LJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 30.63
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 338,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRFFF",
+        "RRRRRFFFFFFFF",
+        "RFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,CO:r|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 352,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRFFF",
+        "RRRRRFFFFFFFF",
+        "RFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BTN:r|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 366,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRFFF",
+        "RRRRRFFFFFFFF",
+        "RFRFFFFFFFFFF",
+        "FFFRFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,SB:r|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 30.63
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 380,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRFFF",
+        "RRCFFFFFFFFFF",
+        "RFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BB:r|HJ",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 30.63
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 394,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCFFFFRFFF",
+        "RRCCCFFFFFFFF",
+        "RFRFFFFFFFFFF",
+        "RFFRRFFFFFFFF",
+        "RFFFCCFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BTN:r|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 20.63
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 408,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCRFFFFRFFF",
+        "RRCCRFFFFFFFF",
+        "RFRFFFFFFFFFF",
+        "FFFRCFFFFFFFF",
+        "FFFFRFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,SB:r|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 21.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 422,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRCCCCFFFRFFF",
+        "RRCCCFFFFFFFF",
+        "RFRCFFFFFFFFF",
+        "FFFRCFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BB:r|CO",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 21.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 436,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRCCRRFFRFFF",
+        "RRCCCFFFFFFFF",
+        "RFRCCFFFFFFFF",
+        "FFFRCFFFFFFFF",
+        "FFFFRCFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,SB:r|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 21.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 450,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRCCCCFFRFFF",
+        "RRCCCCFFFFFFF",
+        "RFRCCFFFFFFFF",
+        "FFFRCFFFFFFFF",
+        "FFFFRCFFFFFFF",
+        "FFFFFCCFFFFFF",
+        "FFFFFFCCFFFFF",
+        "FFFFFFFCCFFFF",
+        "FFFFFFFFCCFFF",
+        "FFFFFFFFFCFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,BB:r|BTN",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 21.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 464,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "RRRCCCCRRRRFF",
+        "RRCCCCFFFFFFF",
+        "RFRCCCFFFFFFF",
+        "RFFRCCFFFFFFF",
+        "RFFFRCFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFCFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "SB:r,BB:r|SB",
+      "options" : [
+        {
+          "code" : "R",
+          "kind" : "raise",
+          "sizeBB" : 28.88
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 478,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,HJ:r,LJ:r|HJ",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 492,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,CO:r,LJ:r|CO",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 506,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACCFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,CO:r,HJ:r|CO",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 520,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BTN:r,LJ:r|BTN",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 534,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACCFFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BTN:r,HJ:r|BTN",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 548,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "CACCCFFFFAFFF",
+        "AACCCFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BTN:r,CO:r|BTN",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 562,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFFFFF",
+        "AACFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,SB:r,LJ:r|SB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 576,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFAFFF",
+        "AACCFFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,SB:r,HJ:r|SB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 590,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACCFFFFFAFFF",
+        "AACFFFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFAFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,SB:r,CO:r|SB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 604,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AAACCFFFFAFFF",
+        "AACFFFFFFFFFF",
+        "AFAFFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFAFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFCFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,SB:r,BTN:r|SB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 618,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACFFFFFFFFFF",
+        "AAFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BB:r,LJ:r|BB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 632,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACFFFFFFFFFF",
+        "AAFFFFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BB:r,HJ:r|BB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 646,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AACFFFFFFFFFF",
+        "AAFFFFFFFFFFF",
+        "FFAFFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BB:r,CO:r|BB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "patches" : [
+          "R-001"
+        ],
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 660,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "AAACFFFFFAAFF",
+        "AACFFFFFFFFFF",
+        "CFAFFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFAFFFFFFFF",
+        "FFFFFCFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,BB:r,BTN:r|BB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "patches" : [
+          "R-002"
+        ],
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 674,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "CACCCFFFFAAFF",
+        "AACCCFFFFFFFF",
+        "AFACFFFFFFFFF",
+        "FFFAFFFFFFFFF",
+        "FFFFAFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "SB:r,BB:r,SB:r|BB",
+      "options" : [
+        {
+          "code" : "A",
+          "kind" : "allIn",
+          "sizeBB" : 100
+        },
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "patches" : [
+          "R-003"
+        ],
+        "rules" : [
+          "R-004"
+        ],
+        "sourceLine" : 688,
+        "status" : "confirmed"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,HJ:r,LJ:r,HJ:a|LJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 702,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,CO:r,LJ:r,CO:a|LJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 716,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BTN:r,LJ:r,BTN:a|LJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 730,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,SB:r,LJ:r,SB:a|LJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 744,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "LJ:r,BB:r,LJ:r,BB:a|LJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 758,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,CO:r,HJ:r,CO:a|HJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 772,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BTN:r,HJ:r,BTN:a|HJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 786,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,SB:r,HJ:r,SB:a|HJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 800,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "HJ:r,BB:r,HJ:r,BB:a|HJ",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 814,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BTN:r,CO:r,BTN:a|CO",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 828,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFCFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,SB:r,CO:r,SB:a|CO",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 842,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "CO:r,BB:r,CO:r,BB:a|CO",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 856,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,SB:r,BTN:r,SB:a|BTN",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 870,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "BTN:r,BB:r,BTN:r,BB:a|BTN",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 884,
+        "status" : "source"
+      }
+    },
+    {
+      "grid" : [
+        "CCFFFFFFFFFFF",
+        "CCFFFFFFFFFFF",
+        "FFCFFFFFFFFFF",
+        "FFFCFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF",
+        "FFFFFFFFFFFFF"
+      ],
+      "id" : "SB:r,BB:r,SB:r,BB:a|SB",
+      "options" : [
+        {
+          "code" : "C",
+          "kind" : "call"
+        },
+        {
+          "code" : "F",
+          "kind" : "fold"
+        }
+      ],
+      "provenance" : {
+        "sourceLine" : 898,
+        "status" : "source"
+      }
+    }
+  ]
+}

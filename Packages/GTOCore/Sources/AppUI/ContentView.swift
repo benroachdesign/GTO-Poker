@@ -1,10 +1,12 @@
 import SwiftUI
 import ChartData
+import PokerDomain
 
 struct ContentView: View {
     @EnvironmentObject var gameState: GameState
     @EnvironmentObject var rangeManager: RangeManager
-    
+    @State private var showingReview = false
+
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
@@ -32,15 +34,30 @@ struct ContentView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 .padding(.bottom, 10)
-                
+                .overlay(alignment: .trailing) {
+                    if openReviewCount > 0 {
+                        Button(action: { showingReview = true }) {
+                            Text("Review \(openReviewCount)")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Theme.raiseColor)
+                                .cornerRadius(14)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 20)
+                    }
+                }
+
                 // MARK: - Grid
-                PokerGridView(currentRange: currentRange)
+                PokerGridView(currentRange: currentRange, emptyMessage: rangeManager.loadError ?? "No range data for this spot")
                     .padding(20)
                     .aspectRatio(1.0, contentMode: .fit)
                 
                 // MARK: - Legend
                 HStack(spacing: 20) {
-                    LegendItem(color: Theme.raiseColor, label: "Raise", percent: currentStats.raise)
+                    LegendItem(color: Theme.raiseColor, label: currentRange?.aggressiveLabel ?? "Raise", percent: currentStats.raise)
                     LegendItem(color: Theme.callColor, label: "Call", percent: currentStats.call)
                     LegendItem(color: Theme.gridEmpty, label: "Fold", percent: currentStats.fold)
                 }
@@ -96,19 +113,23 @@ struct ContentView: View {
                 .padding(20)
             }
         }
+        .sheet(isPresented: $showingReview) {
+            ReviewView()
+        }
     }
-    
+
     // Computed Properties
+    var openReviewCount: Int {
+        rangeManager.library?.book.openReviewCount ?? 0
+    }
+
     var currentRange: PokerRange? {
-        let heroPos = gameState.heroPosition.rawValue
-        var villainPos: String? = nil
-        let scenario = gameState.activeScenario.rawValue
+        var villain: Position? = nil
 
         if let vSeat = gameState.selectedVillainSeat {
-            let vPosName = gameState.getPosition(forSeat: vSeat).rawValue
-            villainPos = vPosName
+            villain = gameState.getPosition(forSeat: vSeat)
         }
-        return rangeManager.getRange(scenario: scenario, hero: heroPos, villain: villainPos)
+        return rangeManager.getRange(scenario: gameState.activeScenario, hero: gameState.heroPosition, villain: villain)
     }
     
     var currentStats: RangeStats {

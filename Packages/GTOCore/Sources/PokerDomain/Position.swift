@@ -20,6 +20,13 @@ public enum Position: String, CaseIterable, Sendable {
         return allCases[normalizedIndex]
     }
 
+    public static let preflopSequence: [Position] = [.LJ, .HJ, .CO, .BTN, .SB, .BB]
+
+    /// True if this seat acts after the other once the flop comes.
+    public func isInPosition(against other: Position) -> Bool {
+        index > other.index
+    }
+
     public var preflopOrder: Int {
         switch self {
         case .LJ: return 0

@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "book": {
+    "id": "6max-100",
+    "title": "6-max 100bb",
+    "format": "6max",
+    "players": 6,
+    "stackBB": 100
+  },
+  "source": {
+    "file": "GTO Preflop Ranges - POKER TRAINER RANGES.csv",
+    "sha256": "8a3a74e07b10e855384bb3681a38f76a395d2a7d0ccca5e5c2bde0ea1fe2a059"
+  },
+  "patches": [
+    {
+      "id": "R-001",
+      "kind": "relabel",
+      "sourceLine": 660,
+      "from": { "scenario": "vs 4bet", "hero": "BB", "villain": "HJ" },
+      "to": { "scenario": "vs 4bet", "hero": "BB", "villain": "CO" },
+      "reason": "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "evidence": "Weakest of the three. This chart fits HJ, CO, BTN or SB, so CO rests on it following the real BB v HJ chart at line 646 in the sheet's usual order.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "confirmed"
+    },
+    {
+      "id": "R-002",
+      "kind": "relabel",
+      "sourceLine": 674,
+      "from": { "scenario": "vs 4bet", "hero": "BB", "villain": "HJ" },
+      "to": { "scenario": "vs 4bet", "hero": "BB", "villain": "BTN" },
+      "reason": "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "evidence": "Strongest of the three. BTN is the only villain whose 3-bet range contains every hand in this chart.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "confirmed"
+    },
+    {
+      "id": "R-003",
+      "kind": "relabel",
+      "sourceLine": 688,
+      "from": { "scenario": "vs 4bet", "hero": "BB", "villain": "HJ" },
+      "to": { "scenario": "vs 4bet", "hero": "BB", "villain": "SB" },
+      "reason": "Four charts in the sheet are labelled vs 4bet BB v HJ, and BB v CO, BTN and SB have no chart of their own.",
+      "evidence": "This chart fits BTN or SB. Line 674 can only be BTN, which leaves SB, and that also matches the sheet's order.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "confirmed"
+    }
+  ],
+  "actionRules": [
+    {
+      "id": "R-004",
+      "scenario": "vs 4bet",
+      "from": "R",
+      "to": "A",
+      "reason": "The sheet writes every aggressive action as R, but a 5-bet is all-in at 100bb.",
+      "evidence": "No hand raises in any vs 5-bet spot, only calls or folds. Ruling D-003.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "confirmed"
+    }
+  ],
+  "sizing": {
+    "opens": { "LJ": 3.5, "HJ": 3.5, "CO": 2.5, "BTN": 2.5, "SB": 3.5 },
+    "threeBet": { "inPosition": 3, "outOfPosition": 3.5 },
+    "fourBet": { "inPosition": 2.5, "outOfPosition": 2.75 }
+  },
+  "disputes": [
+    {
+      "id": "D-001",
+      "title": "SB opening range",
+      "question": "Should the SB open exactly the BTN range?",
+      "detail": "The two charts are identical at 41.8%. Your older sizing rules in version 25.2 have the SB limping, which these charts don't include.",
+      "spots": ["|SB", "|BTN"],
+      "ruling": "Keep it. The SB opens the BTN range, raise or fold, with no limping.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "resolved"
+    },
+    {
+      "id": "D-002",
+      "title": "Aces facing a 4-bet",
+      "question": "Should AA call rather than 5-bet in these two spots?",
+      "detail": "AA calls in BTN v CO and BB v SB, and 5-bets in the other 13 vs 4-bet spots. These could be deliberate traps or typing errors.",
+      "spots": ["CO:r,BTN:r,CO:r|BTN", "SB:r,BB:r,SB:r|BB"],
+      "hands": ["AA"],
+      "ruling": "Keep both. These are deliberate traps in spots where the hero acts last after the flop.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "resolved"
+    },
+    {
+      "id": "D-003",
+      "title": "Are 5-bets all-in?",
+      "question": "Are the Raise cells in vs 4-bet spots all-ins?",
+      "detail": "No hand raises in any vs 5-bet spot, which implies a 5-bet is all-in at 100bb. If so, the 89 Raise cells facing a 4-bet should be labelled All-in. This has to be settled before drills start, because it changes spot ids.",
+      "spots": [],
+      "ruling": "Yes. Raise facing a 4-bet means all-in. Applied as rule R-004.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "resolved"
+    },
+    {
+      "id": "D-004",
+      "title": "Bet sizes",
+      "question": "What bet sizes do these charts assume?",
+      "detail": "The charts don't record sizes. Your older rules in version 25.2 use a 2.5bb open, 3x 3-bet and 2.5x 4-bet in position, and a 3.5bb open, 3.5x 3-bet and 2.75x 4-bet out of position.",
+      "spots": [],
+      "ruling": "Use the 25.2 rules. Opens go by seat. 3-bets and 4-bets judge position against the actual opponent.",
+      "decidedBy": "Ben Roach, 2026-10-31",
+      "status": "resolved"
+    }
+  ]
+}
