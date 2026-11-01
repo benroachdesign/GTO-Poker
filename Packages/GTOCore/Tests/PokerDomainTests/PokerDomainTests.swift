@@ -29,6 +29,19 @@ struct HandGridTests {
         }
     }
 
+    @Test(arguments: [
+        ("aks", "AKs"), ("AKo", "AKo"), ("kao", "AKo"), ("ka", "AKs"), ("ak", "AKs"),
+        ("77", "77"), (" tt ", "TT"), ("t9s", "T9s"), ("9TO", "T9o")
+    ])
+    func typedHandsAreRead(text: String, expected: String) {
+        #expect(HandGrid.parse(text) == expected)
+    }
+
+    @Test(arguments: ["", "a", "aax", "aas", "zz", "ak2", "akso", "1k"])
+    func thingsThatArentHandsAreRejected(text: String) {
+        #expect(HandGrid.parse(text) == nil)
+    }
+
     @Test func coordinatesRejectHandsThatDontExist() {
         #expect(HandGrid.coordinates(of: "AAs") == nil)
         #expect(HandGrid.coordinates(of: "AK") == nil)
@@ -92,6 +105,28 @@ struct SpotKeyTests {
         for id in impossible {
             #expect(key(id)?.isPlayable == false, "\(id)")
         }
+    }
+
+    @Test func replayKnowsWhoIsStillInTheHand() {
+        #expect(key("LJ:r|BTN")?.playersInHand == [.LJ, .BTN, .SB, .BB])
+        #expect(key("LJ:r,BTN:r|LJ")?.playersInHand == [.LJ, .BTN])
+        #expect(key("LJ:r|LJ")?.playersInHand == nil)
+    }
+
+    @Test func spotsDescribeTheirStage() {
+        #expect(key("|LJ")?.stageTitle == "Opening")
+        #expect(key("LJ:r|BTN")?.stageTitle == "Facing Open")
+        #expect(key("LJ:r,BTN:r|LJ")?.stageTitle == "Facing 3-Bet")
+        #expect(key("LJ:r,BTN:r,LJ:r|BTN")?.stageTitle == "Facing 4-Bet")
+        #expect(key("LJ:r,BTN:r,LJ:r,BTN:a|LJ")?.stageTitle == "Facing All-in")
+    }
+
+    @Test func spotsNameWhoTheHeroIsFacing() {
+        #expect(key("|LJ")?.situation == "Opening")
+        #expect(key("LJ:r|BTN")?.situation == "Facing LJ's open")
+        #expect(key("LJ:r,BTN:r|LJ")?.situation == "Facing BTN's 3-bet")
+        #expect(key("LJ:r,BTN:r,LJ:r|BTN")?.situation == "Facing LJ's 4-bet")
+        #expect(key("LJ:r,BTN:r,LJ:r,BTN:a|LJ")?.situation == "Facing BTN's all-in")
     }
 
     @Test func decisionsPointAtEarlierSpots() throws {

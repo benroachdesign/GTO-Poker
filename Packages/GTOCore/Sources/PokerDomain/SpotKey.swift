@@ -96,9 +96,35 @@ public struct SpotKey: Hashable, Sendable, Identifiable {
         decisions.last { $0.spot.hero == hero }
     }
 
-    /// Replays the line in table order, folding anyone it skips, and checks the
-    /// hero really is next to act with someone still in the hand.
+    /// Whoever the hero is up against: the last other player to act on the line.
+    public var villain: Position? {
+        line.last { $0.position != hero }?.position
+    }
+
+    /// How many bets the hero is facing. Zero is an open, one is facing an open.
+    public var betsFaced: Int {
+        line.filter { $0.kind != .call }.count
+    }
+
+    public var stageTitle: String {
+        if line.last?.kind == .allIn { return "Facing All-in" }
+        return ScenarioType.allCases.indices.contains(betsFaced) ? ScenarioType.allCases[betsFaced].label : "Facing \(betsFaced + 1)-Bet"
+    }
+
+    /// The stage in words, naming the opponent: "Facing BTN's 3-bet".
+    public var situation: String {
+        guard let villain else { return ScenarioType.rfi.label }
+        let bet = line.last?.kind == .allIn ? "all-in" : betsFaced == 1 ? "open" : "\(betsFaced + 1)-bet"
+        return "Facing \(villain.rawValue)'s \(bet)"
+    }
+
     public var isPlayable: Bool {
+        playersInHand != nil
+    }
+
+    /// Replays the line in table order, folding anyone it skips. Returns who is still
+    /// in the hand when the hero acts, or nil if the line couldn't really happen.
+    public var playersInHand: [Position]? {
         var players = Position.preflopSequence
         var next = 0
         var lastAggressor: Position? = nil
@@ -114,11 +140,12 @@ public struct SpotKey: Hashable, Sendable, Identifiable {
         }
 
         for step in line {
-            guard advance(to: step.position) else { return false }
+            guard advance(to: step.position) else { return nil }
             if step.kind != .call { lastAggressor = step.position }
             next = (next + 1) % players.count
         }
 
-        return advance(to: hero) && players.count > 1
+        guard advance(to: hero), players.count > 1 else { return nil }
+        return players
     }
 }

@@ -1,27 +1,55 @@
 import SwiftUI
+import ChartData
 
-struct Theme {
-    static let background = Color(hex: "1F2225") // Dark Grey Background
-    static let gridEmpty = Color(hex: "292C31")
-    
-    static let raiseColor = Color(hex: "FF5E3A") // Orange
-    static let callColor = Color(hex: "228B22") // Forest Green
-    
-    static let heroSeat = Color.white
-    static let heroText = Color.black
-    
-    static let villainSeat = Color(hex: "FF5E3A")
-    static let villainText = Color.white
-    
-    static let neutralSeat = Color.white.opacity(0.8)
-    
+enum Theme {
+    static let background = Color(hex: "16181B")
+    static let surface = Color.white.opacity(0.05)
+    static let surfaceRaised = Color.white.opacity(0.1)
+    static let hairline = Color.white.opacity(0.1)
+    static let felt = Color(hex: "1C3026")
+
+    static let raise = Color(hex: "FF5E3A")
+    static let allIn = Color(hex: "C4183C")
+    static let call = Color(hex: "228B22")
+    static let fold = Color(hex: "2A2D32")
+
     static let textPrimary = Color.white
-    static let textSecondary = Color.white.opacity(0.5)
+    static let textSecondary = Color.white.opacity(0.6)
+    static let textTertiary = Color.white.opacity(0.35)
+
+    /// Critically damped: settles without overshoot and can be interrupted at any point.
+    static let motion = Animation.spring(response: 0.38, dampingFraction: 1)
+    static let press = Animation.spring(response: 0.2, dampingFraction: 1)
+
+    static func color(for action: OptionKind) -> Color {
+        switch action {
+        case .raise: return raise
+        case .allIn: return allIn
+        case .call: return call
+        case .fold: return fold
+        }
+    }
 }
 
-// Re-declaring Color(hex:) here if not already available globally, 
-// or I can move the extension from PokerTable.swift to here.
-// I'll create a shared Extension file or just put it here for cleanliness.
+enum BetText {
+    static func size(_ bigBlinds: Double) -> String {
+        "\(bigBlinds.formatted(.number.precision(.fractionLength(0...1))))bb"
+    }
+
+    static func share(_ fraction: Double) -> String {
+        fraction.formatted(.percent.precision(.fractionLength(1)))
+    }
+}
+
+/// Responds on touch-down, so every control feels direct.
+struct PressableStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .animation(Theme.press, value: configuration.isPressed)
+    }
+}
 
 extension Color {
     init(hex: String, opacity: Double = 1.0) {

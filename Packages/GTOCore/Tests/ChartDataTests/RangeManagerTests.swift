@@ -20,34 +20,21 @@ struct RangeManagerTests {
         let manager = await loaded()
         let library = try #require(manager.library)
         for spot in library.book.spots {
-            #expect(manager.range(forSpot: spot.id)?.ranges.count == 169, "\(spot.id)")
+            #expect(manager.range(forSpot: spot.id)?.actions.count == 169, "\(spot.id)")
         }
     }
 
-    @Test func statsAddUpToOneHundred() async throws {
+    @Test func rangesUseTheActionsInTheirSpot() async throws {
         let manager = await loaded()
-        let range = try #require(manager.getRange(scenario: .rfi, hero: .LJ, villain: nil))
-        let stats = range.stats
-        #expect(abs(stats.raise + stats.call + stats.fold - 100) < 0.001)
-        #expect(abs(stats.raise - 17.5) < 0.1)
-    }
-
-    @Test func scenariosFindTheirSpot() async {
-        let manager = await loaded()
-        #expect(manager.getRange(scenario: .vs3bet, hero: .BTN, villain: .BB)?.id == "BTN:r,BB:r|BTN")
-    }
-
-    @Test func spotsFacingA4BetCallTheirAggressiveActionAllIn() async throws {
-        let manager = await loaded()
-        let open = try #require(manager.getRange(scenario: .rfi, hero: .LJ, villain: nil))
-        let facing4Bet = try #require(manager.getRange(scenario: .vs4bet, hero: .BB, villain: .LJ))
-        #expect(open.aggressiveLabel == "Raise")
-        #expect(facing4Bet.aggressiveLabel == "All-in")
-        #expect(facing4Bet.stats.raise > 0)
+        let open = try #require(manager.range(forSpot: "|LJ"))
+        let facing4Bet = try #require(manager.range(forSpot: "LJ:r,BB:r,LJ:r|BB"))
+        #expect(open.actions["AA"] == .raise)
+        #expect(open.actions["72o"] == .fold)
+        #expect(facing4Bet.actions["AA"] == .allIn)
     }
 
     @Test func spotWithNoDecisionReturnsNil() async {
         let manager = await loaded()
-        #expect(manager.getRange(scenario: .rfi, hero: .BB, villain: nil) == nil)
+        #expect(manager.range(forSpot: "|BB") == nil)
     }
 }

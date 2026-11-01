@@ -1,83 +1,44 @@
 import Foundation
-import Combine
+import Observation
+import os
 import PokerDomain
 
+/// A chart as a flat hand -> action map, for comparing one against another.
 public struct PokerRange: Identifiable, Sendable {
     public let id: String
-    public let ranges: [String: String] // Hand Key (e.g. "AA") -> Action (e.g. "Raise")
+    public let actions: [String: OptionKind]
 
     public init(spot: Spot) {
         id = spot.id
-        var ranges: [String: String] = [:]
+        var actions: [String: OptionKind] = [:]
         for hand in HandGrid.allHands {
-            ranges[hand] = spot.primaryAction(for: hand).label
+            actions[hand] = spot.primaryAction(for: hand)
         }
-        self.ranges = ranges
+        self.actions = actions
     }
 
-    private init(id: String, ranges: [String: String]) {
+    private init(id: String, actions: [String: OptionKind]) {
         self.id = id
-        self.ranges = ranges
-    }
-
-    /// What the range's aggressive action is called. Spots facing a 4-bet shove rather than raise.
-    public var aggressiveLabel: String {
-        ranges.values.contains(OptionKind.allIn.label) ? OptionKind.allIn.label : OptionKind.raise.label
+        self.actions = actions
     }
 
     /// This range as it was before a repair.
     public func reverting(_ changes: [CellChange]) -> PokerRange {
-        var ranges = ranges
+        var actions = actions
         for change in changes {
-            ranges[change.hand] = OptionKind(code: change.was)?.label
+            actions[change.hand] = OptionKind(code: change.was)
         }
-        return PokerRange(id: "\(id)#before", ranges: ranges)
-    }
-
-    // Computed statistics
-    public var stats: RangeStats {
-        var raiseCombos = 0.0
-        var callCombos = 0.0
-        var foldCombos = 0.0
-
-        for (hand, action) in ranges {
-            let combos = HandGrid.getCombos(for: hand)
-            switch action {
-            case "Raise", "All-in": raiseCombos += combos
-            case "Call": callCombos += combos
-            default: foldCombos += combos
-            }
-        }
-
-        let total = raiseCombos + callCombos + foldCombos
-        // If total is 0 (empty range), avoid div by zero
-        if total == 0 { return RangeStats(raise: 0, call: 0, fold: 0) }
-
-        return RangeStats(
-            raise: (raiseCombos / total) * 100,
-            call: (callCombos / total) * 100,
-            fold: (foldCombos / total) * 100
-        )
-    }
-}
-
-public struct RangeStats: Sendable {
-    public let raise: Double
-    public let call: Double
-    public let fold: Double
-
-    public init(raise: Double, call: Double, fold: Double) {
-        self.raise = raise
-        self.call = call
-        self.fold = fold
+        return PokerRange(id: "\(id)#before", actions: actions)
     }
 }
 
 @MainActor
-public final class RangeManager: ObservableObject {
-    @Published public private(set) var library: ChartLibrary?
-    @Published public private(set) var loadError: String?
-    private var rangesByID: [String: PokerRange] = [:]
+@Observable
+public final class RangeManager {
+    public private(set) var library: ChartLibrary?
+    public private(set) var loadError: String?
+
+    private let logger = Logger(subsystem: "com.benroachdesign.GTOPoker", category: "charts")
 
     public init() {}
 
@@ -88,27 +49,21 @@ public final class RangeManager: ObservableObject {
         let clock = ContinuousClock()
         let start = clock.now
         do {
-            let (library, ranges) = try await Task.detached(priority: .userInitiated) {
-                let library = try ChartLibrary.bundled()
-                let ranges = library.book.spots.map { PokerRange(spot: $0) }
-                return (library, ranges)
-            }.value
-
-            rangesByID = Dictionary(uniqueKeysWithValues: ranges.map { ($0.id, $0) })
+            let library = try await Self.loadBundled()
             self.library = library
-            print("Loaded \(ranges.count) spots in \(clock.now - start)")
+            logger.info("Loaded \(library.book.spots.count) spots in \(clock.now - start, privacy: .public)")
         } catch {
             loadError = String(describing: error)
-            print("Failed to load ranges: \(error)")
+            logger.error("Failed to load ranges: \(error)")
         }
     }
 
-    public func getRange(scenario: ScenarioType, hero: Position, villain: Position?) -> PokerRange? {
-        guard let key = SpotKey(scenario: scenario, hero: hero, villain: villain) else { return nil }
-        return rangesByID[key.id]
+    public func range(forSpot id: String) -> PokerRange? {
+        library?.spot(id: id).map(PokerRange.init(spot:))
     }
 
-    public func range(forSpot id: String) -> PokerRange? {
-        rangesByID[id]
+    @concurrent
+    private nonisolated static func loadBundled() async throws -> ChartLibrary {
+        try ChartLibrary.bundled()
     }
 }

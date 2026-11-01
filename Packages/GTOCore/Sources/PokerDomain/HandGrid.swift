@@ -18,6 +18,21 @@ public enum HandGrid {
         return "\(r2)\(r1)o"
     }
 
+    /// Reads a hand as someone would type it: "aks", "KAo", "77". Two different
+    /// ranks with no suffix mean the suited hand.
+    public static func parse(_ text: String) -> String? {
+        let letters = text.trimmingCharacters(in: .whitespacesAndNewlines).uppercased().map(String.init)
+        guard letters.count == 2 || letters.count == 3,
+              let first = ranks.firstIndex(of: letters[0]),
+              let second = ranks.firstIndex(of: letters[1]) else { return nil }
+
+        if first == second { return letters.count == 2 ? ranks[first] + ranks[first] : nil }
+
+        let suffix = letters.count == 3 ? letters[2].lowercased() : "s"
+        guard suffix == "s" || suffix == "o" else { return nil }
+        return ranks[min(first, second)] + ranks[max(first, second)] + suffix
+    }
+
     /// Where a hand sits on the grid. Inverse of `getHandName`.
     public static func coordinates(of hand: String) -> (row: Int, col: Int)? {
         let letters = hand.map(String.init)

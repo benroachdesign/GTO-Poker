@@ -5,7 +5,7 @@ import PokerDomain
 /// Shows the evidence behind every repair and open question, so the chart owner can rule on them.
 /// Rulings are recorded in Data/patches.json, not here.
 struct ReviewView: View {
-    @EnvironmentObject var rangeManager: RangeManager
+    @Environment(RangeManager.self) private var rangeManager
     @Environment(\.dismiss) private var dismiss
 
     private var book: RangeBook? { rangeManager.library?.book }
@@ -46,10 +46,10 @@ struct ReviewView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Data review")
                     .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 Text("Drills stay locked until every item here has a ruling.")
                     .font(.caption)
-                    .foregroundColor(Theme.textSecondary)
+                    .foregroundStyle(Theme.textSecondary)
             }
 
             Spacer()
@@ -57,7 +57,7 @@ struct ReviewView: View {
             Button("Done") { dismiss() }
                 .buttonStyle(.plain)
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
         }
         .padding(20)
     }
@@ -66,12 +66,12 @@ struct ReviewView: View {
         Text("\(title.uppercased()) · \(count)")
             .font(.system(size: 12, weight: .semibold))
             .tracking(1.5)
-            .foregroundColor(Theme.textSecondary)
+            .foregroundStyle(Theme.textSecondary)
     }
 }
 
 private struct PatchCard: View {
-    @EnvironmentObject var rangeManager: RangeManager
+    @Environment(RangeManager.self) private var rangeManager
     let patch: Patch
 
     private var after: PokerRange? { rangeManager.range(forSpot: patch.spot) }
@@ -83,11 +83,11 @@ private struct PatchCard: View {
 
             Text("CSV line \(patch.sourceLine), labelled \(patch.originalLabel). Changes \(patch.changes.count) cells.")
                 .font(.caption)
-                .foregroundColor(Theme.textSecondary)
+                .foregroundStyle(Theme.textSecondary)
 
             Text(patch.evidence)
                 .font(.subheadline)
-                .foregroundColor(Theme.textPrimary.opacity(0.85))
+                .foregroundStyle(Theme.textPrimary.opacity(0.85))
                 .fixedSize(horizontal: false, vertical: true)
 
             ReviewGrids {
@@ -99,7 +99,7 @@ private struct PatchCard: View {
                 ForEach(patch.changes, id: \.hand) { change in
                     Text("\(change.hand): \(label(change.was)) → \(label(change.now))")
                         .font(.caption.monospaced())
-                        .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        .foregroundStyle(Theme.textPrimary.opacity(0.7))
                 }
             }
         }
@@ -111,7 +111,7 @@ private struct PatchCard: View {
 }
 
 private struct DisputeCard: View {
-    @EnvironmentObject var rangeManager: RangeManager
+    @Environment(RangeManager.self) private var rangeManager
     let dispute: Dispute
 
     var body: some View {
@@ -120,12 +120,12 @@ private struct DisputeCard: View {
 
             Text(dispute.question)
                 .font(.subheadline.weight(.semibold))
-                .foregroundColor(Theme.textPrimary)
+                .foregroundStyle(Theme.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text(dispute.detail)
                 .font(.subheadline)
-                .foregroundColor(Theme.textPrimary.opacity(0.7))
+                .foregroundStyle(Theme.textPrimary.opacity(0.7))
                 .fixedSize(horizontal: false, vertical: true)
 
             if !dispute.spots.isEmpty {
@@ -152,8 +152,7 @@ private struct ReviewCard<Content: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.white.opacity(0.05))
-        .cornerRadius(16)
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -165,14 +164,14 @@ private struct CardTitle: View {
         HStack(alignment: .firstTextBaseline) {
             Text(text)
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
 
             Spacer()
 
             if let badge {
                 Text(badge)
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(Theme.raiseColor)
+                    .foregroundStyle(Theme.raise)
             }
         }
     }
@@ -198,18 +197,16 @@ private struct LabelledGrid: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.caption.weight(.semibold))
-                .foregroundColor(Theme.textSecondary)
+                .foregroundStyle(Theme.textSecondary)
 
-            PokerGridView(currentRange: range, highlighted: highlighted)
-                .aspectRatio(1.0, contentMode: .fit)
+            RangeGridView(cells: range?.actions.mapValues(CellState.action) ?? [:], highlighted: highlighted)
         }
     }
 }
 
 extension SpotKey {
     var displayName: String {
-        let stage = ScenarioType.allCases.indices.contains(line.count) ? ScenarioType.allCases[line.count].label : "\(line.count) actions"
-        guard let villain = line.last?.position else { return "\(hero.rawValue) \(stage)" }
-        return "\(hero.rawValue) vs \(villain.rawValue) · \(stage)"
+        guard let villain else { return "\(hero.rawValue) \(stageTitle)" }
+        return "\(hero.rawValue) vs \(villain.rawValue) · \(stageTitle)"
     }
 }

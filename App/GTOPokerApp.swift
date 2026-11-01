@@ -8,6 +8,7 @@ struct GTOPokerApp: App {
             RootView()
         }
         #if os(macOS)
+        .defaultSize(width: 1180, height: 840)
         .windowStyle(HiddenTitleBarWindowStyle())
         #endif
     }

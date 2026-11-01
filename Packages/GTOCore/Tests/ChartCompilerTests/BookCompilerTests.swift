@@ -101,7 +101,7 @@ struct BookCompilerTests {
         for patch in book.patches {
             let spot = try #require(spots[patch.spot])
             let old = try #require(before[patch.spot])
-            #expect(PokerRange(spot: spot).reverting(patch.changes).ranges == PokerRange(spot: old).ranges)
+            #expect(PokerRange(spot: spot).reverting(patch.changes).actions == PokerRange(spot: old).actions)
         }
     }
 
