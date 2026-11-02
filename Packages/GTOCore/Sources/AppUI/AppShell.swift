@@ -1,8 +1,5 @@
 import SwiftUI
-import os
-import ChartData
 import PokerDomain
-import TrainerStore
 
 enum AppSection: String, CaseIterable, Identifiable {
     case charts, drills, progress
@@ -29,33 +26,22 @@ enum AppSection: String, CaseIterable, Identifiable {
 /// The app's sections. Each keeps its place while you're in another, so a
 /// drill can stop to look something up in the charts and carry on afterwards.
 struct AppShell: View {
-    private static let lastSpotKey = "explorer.lastSpot"
+    let session: AppSession
 
-    @AppStorage(lastSpotKey) private var lastSpot = ""
+    @AppStorage(AppSession.lastSpotKey) private var lastSpot = ""
     @State private var section = AppSection.charts
-    @State private var explorer: ExplorerModel?
-    @State private var drills: DrillModel
-    @State private var mastery: MasteryModel
-
-    init(library: ChartLibrary) {
-        let saved = UserDefaults.standard.string(forKey: Self.lastSpotKey)
-        let store = Self.makeStore()
-        _explorer = State(initialValue: ExplorerModel(library: library, startingAt: saved))
-        _drills = State(initialValue: DrillModel(library: library, store: store))
-        _mastery = State(initialValue: MasteryModel(library: library, store: store))
-    }
 
     var body: some View {
         sections
-            .onChange(of: section, refresh)
-            .task { refresh() }
+            .onChange(of: section) { session.refresh() }
+            .task { session.refresh() }
     }
 
     @ViewBuilder
     private var sections: some View {
         #if os(macOS)
         VStack(spacing: 0) {
-            SectionSwitcher(selection: $section, dueCount: drills.dueCount)
+            SectionSwitcher(selection: $section, dueCount: session.drills.dueCount)
                 .padding(.top, 6)
 
             switch section {
@@ -72,7 +58,7 @@ struct AppShell: View {
             Tab(AppSection.drills.title, systemImage: AppSection.drills.systemImage, value: AppSection.drills) {
                 drillsSection
             }
-            .badge(drills.dueCount)
+            .badge(session.drills.dueCount)
             Tab(AppSection.progress.title, systemImage: AppSection.progress.systemImage, value: AppSection.progress) {
                 progress
             }
@@ -83,7 +69,7 @@ struct AppShell: View {
 
     @ViewBuilder
     private var charts: some View {
-        if let explorer {
+        if let explorer = session.explorer {
             ExplorerView(model: explorer, isActive: section == .charts)
                 .onChange(of: explorer.key) {
                     lastSpot = explorer.key.id
@@ -92,14 +78,15 @@ struct AppShell: View {
     }
 
     private var drillsSection: some View {
-        DrillsView(model: drills, isActive: section == .drills, onOpenSpot: open)
+        DrillsView(model: session.drills, isActive: section == .drills, onOpenSpot: open)
     }
 
     private var progress: some View {
         MasteryView(
-            model: mastery,
+            model: session.mastery,
+            syncStatus: session.sync.status,
             onReview: {
-                drills.startReview()
+                session.drills.startReview()
                 section = .drills
             },
             onDrill: { section = .drills },
@@ -107,28 +94,11 @@ struct AppShell: View {
         )
     }
 
-    /// Reloads what's worked out from the log, since answers made in Drills change what the other sections show.
-    private func refresh() {
-        drills.refreshHistory()
-        mastery.refresh()
-    }
-
     /// Jumps to that exact spot, and hand if there is one, in the charts.
     private func open(_ spot: SpotKey, hand: String?) {
-        explorer?.go(to: spot)
-        explorer?.selectedHand = hand
+        session.explorer?.go(to: spot)
+        session.explorer?.selectedHand = hand
         section = .charts
-    }
-
-    /// Drills still work without a database. They just won't remember anything.
-    private static func makeStore() -> any AttemptStore {
-        do {
-            return try SwiftDataAttemptStore()
-        } catch {
-            Logger(subsystem: "com.benroachdesign.GTOPoker", category: "drills")
-                .error("Failed to open the attempt log: \(error)")
-            return InMemoryAttemptStore()
-        }
     }
 }
 

@@ -1,12 +1,17 @@
 import Foundation
 import SwiftData
+import os
 import Trainer
 
 /// Keeps the attempt log. Attempts are only ever added, never changed.
 @MainActor
 public protocol AttemptStore: AnyObject {
+    var iCloudContainer: String? { get } // Nil when answers stay on this device
     func append(_ attempt: Attempt) throws
     func attempts() throws -> [Attempt]
+    /// Picks up anything added from outside this app, such as from another device.
+    /// Returns whether there was anything new.
+    func reloadIfChanged() throws -> Bool
 }
 
 extension AttemptStore {
@@ -21,6 +26,8 @@ extension AttemptStore {
 public final class InMemoryAttemptStore: AttemptStore {
     private var log: [Attempt] = []
 
+    public let iCloudContainer: String? = nil
+
     public init() {}
 
     public func append(_ attempt: Attempt) throws {
@@ -29,6 +36,10 @@ public final class InMemoryAttemptStore: AttemptStore {
 
     public func attempts() throws -> [Attempt] {
         log
+    }
+
+    public func reloadIfChanged() throws -> Bool {
+        false
     }
 }
 
@@ -62,36 +73,71 @@ final class AttemptRecord {
 
 @MainActor
 public final class SwiftDataAttemptStore: AttemptStore {
+    public let iCloudContainer: String?
+
     private let container: ModelContainer
     private var log: [Attempt]? // Held once read: it only grows, and a fetch took 0.3s at 10,000 answers
     private var ids = Set<UUID>()
+    private var rowCount = 0 // Rows behind the log, which can include duplicates
 
-    /// Sync stays off until it's turned on deliberately in a later milestone.
-    public init(inMemory: Bool = false) throws {
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: inMemory, cloudKitDatabase: .none)
+    /// Keeps the log on this device only. A file puts it somewhere other than the
+    /// app's usual place, which lets tests stand in for a second device.
+    public init(inMemory: Bool = false, file: URL? = nil) throws {
+        let configuration = if let file {
+            ModelConfiguration(url: file, cloudKitDatabase: .none)
+        } else {
+            ModelConfiguration(isStoredInMemoryOnly: inMemory, cloudKitDatabase: .none)
+        }
         container = try ModelContainer(for: AttemptRecord.self, configurations: configuration)
+        iCloudContainer = nil
+    }
+
+    /// The same log in the same place, so answers saved before sync was turned on carry over,
+    /// mirrored to an iCloud container. Only call this from a build signed for that container:
+    /// CloudKit otherwise crashes the process from a background thread a moment later.
+    public init(iCloudContainer identifier: String, file: URL? = nil) throws {
+        let configuration = if let file {
+            ModelConfiguration(url: file, cloudKitDatabase: .private(identifier))
+        } else {
+            ModelConfiguration(cloudKitDatabase: .private(identifier))
+        }
+        container = try ModelContainer(for: AttemptRecord.self, configurations: configuration)
+        iCloudContainer = identifier
     }
 
     public func append(_ attempt: Attempt) throws {
         container.mainContext.insert(AttemptRecord(attempt))
         try container.mainContext.save()
 
-        if log != nil, ids.insert(attempt.id).inserted {
+        guard log != nil else { return }
+        rowCount += 1
+        if ids.insert(attempt.id).inserted {
             log?.append(attempt)
         }
     }
 
     /// Oldest first when read. Attempts are deduplicated by id, since a database with no
-    /// unique constraints can hold the same one twice once sync is on. Sync will have to
-    /// clear the copy held here whenever it brings in attempts from another device.
+    /// unique constraints can hold the same one twice once it syncs.
     public func attempts() throws -> [Attempt] {
         if let log { return log }
 
         let descriptor = FetchDescriptor<AttemptRecord>(sortBy: [SortDescriptor(\.answeredAt)])
-        let attempts = try container.mainContext.fetch(descriptor)
-            .map(\.attempt)
-            .filter { ids.insert($0.id).inserted }
+        let rows = try container.mainContext.fetch(descriptor)
+        let attempts = rows.map(\.attempt).filter { ids.insert($0.id).inserted }
+        rowCount = rows.count
         log = attempts
         return attempts
+    }
+
+    /// Counting is cheap, so this can run on every change without rereading the whole log.
+    public func reloadIfChanged() throws -> Bool {
+        guard log != nil else { return false } // Nothing is held, so the next read is fresh anyway
+
+        let rows = try container.mainContext.fetchCount(FetchDescriptor<AttemptRecord>())
+        guard rows != rowCount else { return false }
+
+        log = nil
+        ids = []
+        return true
     }
 }

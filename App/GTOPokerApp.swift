@@ -5,7 +5,7 @@ import AppUI
 struct GTOPokerApp: App {
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView(syncsWithICloud: true)
         }
         #if os(macOS)
         .defaultSize(width: 1180, height: 840)

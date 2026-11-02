@@ -272,3 +272,23 @@ struct MasteryReportTests {
         #expect(log.report(attempts).weakest.map(\.key.id) == ["|LJ", "|CO"])
     }
 }
+
+struct TwoDeviceTests {
+    private let log: Log
+
+    init() throws {
+        log = try Log()
+    }
+
+    @Test func offlineAnswersFromTwoDevicesMergeTheSameWhicheverArrivesFirst() throws {
+        let phone = [try log.answer(on: log.day(0)), try log.answer(on: log.day(1))]
+        let mac = [try log.answer(right: false, on: log.day(1.5)), try log.answer("|LJ", "Q9s", on: log.day(2))]
+
+        let phoneFirst = log.schedule(phone + mac)
+        let macFirst = log.schedule(mac + phone)
+
+        #expect(phoneFirst.item(spot: "|LJ", hand: "K5s") == macFirst.item(spot: "|LJ", hand: "K5s"))
+        #expect(phoneFirst.item(spot: "|LJ", hand: "Q9s") == macFirst.item(spot: "|LJ", hand: "Q9s"))
+        #expect(phoneFirst.item(spot: "|LJ", hand: "K5s")?.box == 0) // The mistake on the Mac counts
+    }
+}

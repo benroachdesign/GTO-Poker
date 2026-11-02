@@ -65,6 +65,7 @@ final class MasteryModel {
 
 struct MasteryView: View {
     let model: MasteryModel
+    let syncStatus: SyncStatus
     let onReview: () -> Void
     let onDrill: () -> Void
     let onOpenSpot: (SpotKey) -> Void
@@ -93,6 +94,8 @@ struct MasteryView: View {
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(Theme.textTertiary)
                             .fixedSize(horizontal: false, vertical: true)
+
+                        SyncStatusRow(status: syncStatus)
 
                         if let file = model.historyFile {
                             ShareLink(item: file, preview: SharePreview("GTO Poker history")) {
@@ -184,6 +187,28 @@ struct MasteryView: View {
         }
         .padding(32)
         .frame(maxWidth: 420)
+    }
+}
+
+/// CloudKit fails quietly, so the app says where your answers actually are.
+private struct SyncStatusRow: View {
+    let status: SyncStatus
+
+    private var message: (text: String, icon: String) {
+        switch status {
+        case .off: return ("Saved on this device only", "icloud.slash")
+        case .waiting: return ("iCloud sync is on", "icloud")
+        case .synced: return ("Synced with iCloud", "checkmark.icloud")
+        case .signedOut: return ("Sign in to iCloud to sync. Answers are safe on this device.", "person.icloud")
+        case .failed: return ("iCloud sync is paused. Answers are safe on this device.", "exclamationmark.icloud")
+        }
+    }
+
+    var body: some View {
+        Label(message.text, systemImage: message.icon)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(status == .failed ? Theme.raise : Theme.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
